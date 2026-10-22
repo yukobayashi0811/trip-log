@@ -1,0 +1,16 @@
+
+> @workspace/api-server@0.0.0 test /tmp/trip-log-pr20.pCOOWv/repo/artifacts/api-server
+> vitest run
+
+
+ RUN  v5.0.5 /tmp/trip-log-pr20.pCOOWv/repo/artifacts/api-server
+
+
+ Test Files  12 passed (12)
+      Tests  248 passed (248)
+   Start at  19:28:21
+   Duration  7.80s (tests 60%, import 35%, transform 5%)
+
+    Isolate  12 workers spawned · ~139ms startup each (spawn + environment, per file)
+             at least ~416ms faster with isolate: false — reuses workers across files instead of one per file
+

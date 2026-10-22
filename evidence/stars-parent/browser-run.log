@@ -1,0 +1,31 @@
+PASS Exact PR app renders the signed-out desktop landing page
+Attention: Clerk collects telemetry data from its SDKs when connected to development instances.
+The data collected is used to inform Clerk's product roadmap.
+To learn more, including how to opt-out from the telemetry program, visit: https://clerk.com/docs/telemetry.
+
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS Authenticated browser API creates an isolated synthetic trip
+PASS All Trips initially shows unstarred state
+PASS Desktop All Trips star click saves successfully
+PASS Starred Trips lists the saved trip
+PASS Trip Detail and reload preserve the saved state
+PASS Star control receives keyboard focus
+PASS Keyboard Enter removes a star
+PASS Controlled 500 shows failure without falsely marking starred
+PASS Retry after failed star saves correctly
+PASS Controlled 500 does not falsely remove the saved star
+PASS Failed unstar preserves the actual database favorite
+PASS Retry after failed unstar removes it correctly
+PASS Mobile All Trips has no horizontal overflow
+PASS Mobile Trip Detail has no horizontal overflow
+PASS Mobile Detail star control has a visible 44-pixel touch target
+PASS Mobile Starred Trips has no horizontal overflow
+PASS Mobile touch star/unstar, detail, and starred list agree
+PASS Mobile reload preserves starred-trip persistence
+PASS Failed Starred Trips request provides an actionable retry
+PASS Starred Trips retry restores saved data
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS A second genuinely Clerk-authenticated user cannot list, read, star, or unstar the owner trip
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS Sign-out/sign-in preserves owner star and does not reuse the other user cache
+PASS Synthetic trip cleanup succeeds through authenticated owner API
