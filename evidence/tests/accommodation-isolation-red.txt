@@ -1,0 +1,117 @@
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+[07:06:06.316] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 1,
+      "method": "GET",
+      "url": "/api/auth/me"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 236
+[07:06:06.348] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 2,
+      "method": "POST",
+      "url": "/api/trips"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 25
+[07:06:06.388] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 3,
+      "method": "POST",
+      "url": "/api/trips/dc8e6bd0-7fbf-42c3-9ef9-12e6aa0a39ab/stops"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 37
+[07:06:06.429] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 4,
+      "method": "POST",
+      "url": "/api/trips/dc8e6bd0-7fbf-42c3-9ef9-12e6aa0a39ab/stops/e1f6303f-dade-439e-9260-5cfce1c0ef7b/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 37
+[07:06:06.440] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 5,
+      "method": "GET",
+      "url": "/api/auth/me"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 7
+[07:06:06.457] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 6,
+      "method": "POST",
+      "url": "/api/trips"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 15
+[07:06:06.550] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 7,
+      "method": "POST",
+      "url": "/api/trips/1b678c44-69ac-4b76-9000-1a9b18a2a06b/stops"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 90
+[07:06:06.565] [32mINFO[39m (1832): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 8,
+      "method": "GET",
+      "url": "/api/trips/dc8e6bd0-7fbf-42c3-9ef9-12e6aa0a39ab/stops/e1f6303f-dade-439e-9260-5cfce1c0ef7b/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 13
+ ❯ src/tests/stays.test.ts (11 tests | 1 failed | 10 skipped) 541ms
+   ❯ owned accommodation stays on real PostgreSQL (11)
+     × blocks User B from reading, creating, updating, or deleting User A's known stay 512ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tests/stays.test.ts > owned accommodation stays on real PostgreSQL > blocks User B from reading, creating, updating, or deleting User A's known stay
+AssertionError: expected 200 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 200
+
+ ❯ src/tests/stays.test.ts:222:73
+    220|     const bStop = await createStop("User B stop", bTrip);
+    221|
+    222|     expect((await request(app).get(path(ownerTrip, ownerStop))).status…
+       |                                                                         ^
+    223|     expect((await request(app).post(path(ownerTrip, ownerStop)).send(v…
+    224|     expect((await request(app).put(path(ownerTrip, ownerStop)).send({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 skipped (11)
+   Start at  07:06:05
+   Duration  1.59s (import 57%, tests 37%, transform 6%)
+
+undefined
+/home/runner/workspace/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/tests/stays.test.ts -t blocks User B

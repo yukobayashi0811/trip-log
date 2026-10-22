@@ -29,6 +29,8 @@ import type {
   HealthStatus,
   InvalidTripRequestResponse,
   OneStopResponse,
+  Stay,
+  StayInput,
   Stop,
   StopInput,
   StopListResponse,
@@ -719,6 +721,264 @@ export const useDeleteStop = <TError = ErrorType<InvalidTripRequestResponse | vo
         TContext
       > => {
       return useMutation(getDeleteStopMutationOptions(options), queryClient);
+    }
+
+export const getCreateStayUrl = (tripId: string,
+    stopId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops/${stopId}/stay`
+}
+
+/**
+ * @summary Add the single accommodation stay for an owned stop
+ */
+export const createStay = async (tripId: string,
+    stopId: string,
+    stayInput: StayInput, options?: Parameters<typeof customFetch>[1]): Promise<Stay> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Stay>(getCreateStayUrl(tripId,stopId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(stayInput)
+  }
+);}
+
+
+
+
+
+export const getCreateStayMutationKey = () => ['createStay'] as const;
+
+export const getCreateStayMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStay>>, TError,CreateStayMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createStay>>, TError,CreateStayMutationVariables, TContext> => {
+
+const mutationKey = getCreateStayMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createStay>>, CreateStayMutationVariables> = (props) => {
+          const {tripId,stopId,data} = props ?? {};
+
+          return  createStay(tripId,stopId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateStayMutationResult = NonNullable<Awaited<ReturnType<typeof createStay>>>
+    export type CreateStayMutationBody = BodyType<StayInput>
+    export type CreateStayMutationError = ErrorType<InvalidTripRequestResponse | void>
+    export type CreateStayMutationVariables = {tripId: string;stopId: string;data: BodyType<StayInput>}
+
+    /**
+ * @summary Add the single accommodation stay for an owned stop
+ */
+export const useCreateStay = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStay>>, TError,CreateStayMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createStay>>,
+        TError,
+        CreateStayMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateStayMutationOptions(options), queryClient);
+    }
+
+export const getUpdateStayUrl = (tripId: string,
+    stopId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops/${stopId}/stay`
+}
+
+/**
+ * @summary Replace an existing stay on an owned stop
+ */
+export const updateStay = async (tripId: string,
+    stopId: string,
+    stayInput: StayInput, options?: Parameters<typeof customFetch>[1]): Promise<Stay> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Stay>(getUpdateStayUrl(tripId,stopId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(stayInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateStayMutationKey = () => ['updateStay'] as const;
+
+export const getUpdateStayMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStay>>, TError,UpdateStayMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateStay>>, TError,UpdateStayMutationVariables, TContext> => {
+
+const mutationKey = getUpdateStayMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateStay>>, UpdateStayMutationVariables> = (props) => {
+          const {tripId,stopId,data} = props ?? {};
+
+          return  updateStay(tripId,stopId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateStayMutationResult = NonNullable<Awaited<ReturnType<typeof updateStay>>>
+    export type UpdateStayMutationBody = BodyType<StayInput>
+    export type UpdateStayMutationError = ErrorType<InvalidTripRequestResponse | void>
+    export type UpdateStayMutationVariables = {tripId: string;stopId: string;data: BodyType<StayInput>}
+
+    /**
+ * @summary Replace an existing stay on an owned stop
+ */
+export const useUpdateStay = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStay>>, TError,UpdateStayMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateStay>>,
+        TError,
+        UpdateStayMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateStayMutationOptions(options), queryClient);
+    }
+
+export const getDeleteStayUrl = (tripId: string,
+    stopId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops/${stopId}/stay`
+}
+
+/**
+ * @summary Delete only the stay for an owned stop
+ */
+export const deleteStay = async (tripId: string,
+    stopId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteStayUrl(tripId,stopId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteStayMutationKey = () => ['deleteStay'] as const;
+
+export const getDeleteStayMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStay>>, TError,DeleteStayMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteStay>>, TError,DeleteStayMutationVariables, TContext> => {
+
+const mutationKey = getDeleteStayMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteStay>>, DeleteStayMutationVariables> = (props) => {
+          const {tripId,stopId} = props ?? {};
+
+          return  deleteStay(tripId,stopId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteStayMutationResult = NonNullable<Awaited<ReturnType<typeof deleteStay>>>
+
+    export type DeleteStayMutationError = ErrorType<void>
+    export type DeleteStayMutationVariables = {tripId: string;stopId: string}
+
+    /**
+ * @summary Delete only the stay for an owned stop
+ */
+export const useDeleteStay = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStay>>, TError,DeleteStayMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteStay>>,
+        TError,
+        DeleteStayMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteStayMutationOptions(options), queryClient);
     }
 
 export const getListTripsUrl = () => {

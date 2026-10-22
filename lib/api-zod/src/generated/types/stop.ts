@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { Stay } from './stay';
 import type { StopTransportFromPrevious } from './stopTransportFromPrevious';
 
 export interface Stop {
@@ -22,4 +23,5 @@ export interface Stop {
   transportFromPrevious: StopTransportFromPrevious;
   /** @nullable */
   notes: string | null;
+  stay: Stay | null;
 }

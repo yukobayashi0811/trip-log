@@ -120,6 +120,62 @@ paths:
         "400": { $ref: "#/components/responses/InvalidTripRequest" }
         "401": { description: Sign-in required }
         "404": { description: Stop or parent trip not found or not owned }
+  /trips/{tripId}/stops/{stopId}/stay:
+    parameters:
+      - { $ref: "#/components/parameters/TripId" }
+      - name: stopId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      operationId: createStay
+      summary: Add the single accommodation stay for an owned stop
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StayInput" }
+      responses:
+        "201":
+          description: Created stay
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Stay" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Stop or parent trip not found or not owned }
+        "409": { description: This stop already has an accommodation }
+        "413": { description: Request too large }
+        "415": { description: Send application/json }
+    put:
+      operationId: updateStay
+      summary: Replace an existing stay on an owned stop
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StayInput" }
+      responses:
+        "200":
+          description: Updated stay
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Stay" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Stay or parent stop/trip missing or not owned }
+        "413": { description: Request too large }
+        "415": { description: Send application/json }
+    delete:
+      operationId: deleteStay
+      summary: Delete only the stay for an owned stop
+      security: [{ sessionCookie: [] }]
+      responses:
+        "204": { description: Deleted; the stop and trip remain }
+        "401": { description: Sign-in required }
+        "404": { description: Stay or parent stop/trip missing or not owned }
   /trips:
     get:
       operationId: listTrips
@@ -322,7 +378,7 @@ components:
         notes: { type: string, maxLength: 20000, nullable: true }
     Stop:
       type: object
-      required: [id, tripId, name, latitude, longitude, sortOrder, visitDate, stopType, transportFromPrevious, notes]
+      required: [id, tripId, name, latitude, longitude, sortOrder, visitDate, stopType, transportFromPrevious, notes, stay]
       properties:
         id: { type: string, format: uuid }
         tripId: { type: string, format: uuid }
@@ -333,6 +389,31 @@ components:
         visitDate: { type: string, format: date, nullable: true }
         stopType: { type: string, nullable: true }
         transportFromPrevious: { type: string, enum: [Driving, Flying, Other], nullable: true }
+        notes: { type: string, nullable: true }
+        stay:
+          oneOf:
+            - { $ref: "#/components/schemas/Stay" }
+            - { type: "null" }
+    StayInput:
+      type: object
+      additionalProperties: false
+      required: [accommodationType, checkIn, checkOut]
+      properties:
+        accommodationType: { type: string, enum: [Hotel, Campground, Vacation Rental, Other] }
+        checkIn: { type: string, format: date }
+        checkOut: { type: string, format: date }
+        rating: { type: integer, minimum: 1, maximum: 5, nullable: true }
+        notes: { type: string, nullable: true }
+    Stay:
+      type: object
+      required: [id, stopId, accommodationType, checkIn, checkOut, rating, notes]
+      properties:
+        id: { type: string, format: uuid }
+        stopId: { type: string, format: uuid }
+        accommodationType: { type: string, enum: [Hotel, Campground, Vacation Rental, Other] }
+        checkIn: { type: string, format: date }
+        checkOut: { type: string, format: date }
+        rating: { type: integer, minimum: 1, maximum: 5, nullable: true }
         notes: { type: string, nullable: true }
     TripRequestError:
       type: object

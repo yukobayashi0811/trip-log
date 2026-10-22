@@ -1,0 +1,178 @@
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+[07:06:23.002] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 1,
+      "method": "GET",
+      "url": "/api/auth/me"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 27
+[07:06:23.127] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 2,
+      "method": "POST",
+      "url": "/api/trips"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 118
+[07:06:23.151] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 3,
+      "method": "POST",
+      "url": "/api/trips/8367fd79-0646-40f3-97f2-91228d6e9445/stops"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 21
+[07:06:23.181] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 4,
+      "method": "POST",
+      "url": "/api/trips/8367fd79-0646-40f3-97f2-91228d6e9445/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 26
+[07:06:23.211] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 5,
+      "method": "GET",
+      "url": "/api/auth/me"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 26
+[07:06:23.226] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 6,
+      "method": "POST",
+      "url": "/api/trips"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 12
+[07:06:23.243] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 7,
+      "method": "POST",
+      "url": "/api/trips/226b6f8f-27f6-4931-bd27-0cbf77209635/stops"
+    }
+    [35mres[39m: {
+      "statusCode": 201
+    }
+    [35mresponseTime[39m: 14
+[07:06:23.252] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 8,
+      "method": "GET",
+      "url": "/api/trips/8367fd79-0646-40f3-97f2-91228d6e9445/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 6
+[07:06:23.262] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 9,
+      "method": "POST",
+      "url": "/api/trips/8367fd79-0646-40f3-97f2-91228d6e9445/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 7
+[07:06:23.274] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 10,
+      "method": "PUT",
+      "url": "/api/trips/8367fd79-0646-40f3-97f2-91228d6e9445/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 10
+[07:06:23.287] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 11,
+      "method": "DELETE",
+      "url": "/api/trips/8367fd79-0646-40f3-97f2-91228d6e9445/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 11
+[07:06:23.303] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 12,
+      "method": "GET",
+      "url": "/api/trips/226b6f8f-27f6-4931-bd27-0cbf77209635/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 14
+[07:06:23.329] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 13,
+      "method": "PUT",
+      "url": "/api/trips/226b6f8f-27f6-4931-bd27-0cbf77209635/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 24
+[07:06:23.340] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 14,
+      "method": "DELETE",
+      "url": "/api/trips/226b6f8f-27f6-4931-bd27-0cbf77209635/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 8
+[07:06:23.350] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 15,
+      "method": "POST",
+      "url": "/api/trips/226b6f8f-27f6-4931-bd27-0cbf77209635/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 7
+[07:06:23.359] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 16,
+      "method": "GET",
+      "url": "/api/trips/226b6f8f-27f6-4931-bd27-0cbf77209635/stops/0d50e42b-f671-4721-9ff0-6a2455526b20/stay"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 7
+[07:06:23.372] [32mINFO[39m (1886): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 17,
+      "method": "GET",
+      "url": "/api/trips/8367fd79-0646-40f3-97f2-91228d6e9445/stops/0249752a-1f4f-4a34-83cb-ac990af03d1f"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 9
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 10 skipped (11)
+   Start at  07:06:22
+   Duration  1.34s (import 57%, tests 35%, transform 8%)

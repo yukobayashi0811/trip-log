@@ -1,0 +1,5 @@
+Command: pnpm --filter @workspace/api-server exec vitest run src/tests/stays.test.ts -t "blocks User B"
+UTC started: 2026-10-22T07:06:21Z
+UTC completed: 2026-10-22T07:06:23Z
+Restored source SHA-256: 5c79022869cb9966624045c804181c8ce384f527ddeac296a43196f92807c1cc
+Exit status: 0

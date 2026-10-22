@@ -48,6 +48,10 @@ export const ListStopsParams = zod.object({
   "tripId": zod.coerce.string().uuid()
 })
 
+export const listStopsResponseStayOneRatingMax = 5;
+
+
+
 export const ListStopsResponseItem = zod.object({
   "id": zod.string().uuid(),
   "tripId": zod.string().uuid(),
@@ -58,7 +62,16 @@ export const ListStopsResponseItem = zod.object({
   "visitDate": zod.coerce.date().nullable(),
   "stopType": zod.string().nullable(),
   "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable(),
+  "stay": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "stopId": zod.string().uuid(),
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(listStopsResponseStayOneRatingMax).nullable(),
   "notes": zod.string().nullable()
+}),zod.null()])
 })
 export const ListStopsResponse = zod.array(ListStopsResponseItem)
 
@@ -98,6 +111,10 @@ export const CreateStopBody = zod.object({
   "notes": zod.string().max(createStopBodyNotesMax).nullish()
 })
 
+export const createStopResponseStayOneRatingMax = 5;
+
+
+
 export const CreateStopResponse = zod.object({
   "id": zod.string().uuid(),
   "tripId": zod.string().uuid(),
@@ -108,7 +125,16 @@ export const CreateStopResponse = zod.object({
   "visitDate": zod.coerce.date().nullable(),
   "stopType": zod.string().nullable(),
   "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable(),
+  "stay": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "stopId": zod.string().uuid(),
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(createStopResponseStayOneRatingMax).nullable(),
   "notes": zod.string().nullable()
+}),zod.null()])
 })
 
 
@@ -123,6 +149,10 @@ export const ReorderStopsBody = zod.object({
   "stopIds": zod.array(zod.string().uuid())
 })
 
+export const reorderStopsResponseStayOneRatingMax = 5;
+
+
+
 export const ReorderStopsResponseItem = zod.object({
   "id": zod.string().uuid(),
   "tripId": zod.string().uuid(),
@@ -133,7 +163,16 @@ export const ReorderStopsResponseItem = zod.object({
   "visitDate": zod.coerce.date().nullable(),
   "stopType": zod.string().nullable(),
   "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable(),
+  "stay": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "stopId": zod.string().uuid(),
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(reorderStopsResponseStayOneRatingMax).nullable(),
   "notes": zod.string().nullable()
+}),zod.null()])
 })
 export const ReorderStopsResponse = zod.array(ReorderStopsResponseItem)
 
@@ -146,6 +185,10 @@ export const GetStopParams = zod.object({
   "stopId": zod.coerce.string().uuid()
 })
 
+export const getStopResponseStayOneRatingMax = 5;
+
+
+
 export const GetStopResponse = zod.object({
   "id": zod.string().uuid(),
   "tripId": zod.string().uuid(),
@@ -156,7 +199,16 @@ export const GetStopResponse = zod.object({
   "visitDate": zod.coerce.date().nullable(),
   "stopType": zod.string().nullable(),
   "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable(),
+  "stay": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "stopId": zod.string().uuid(),
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(getStopResponseStayOneRatingMax).nullable(),
   "notes": zod.string().nullable()
+}),zod.null()])
 })
 
 
@@ -196,6 +248,10 @@ export const UpdateStopBody = zod.object({
   "notes": zod.string().max(updateStopBodyNotesMax).nullish()
 })
 
+export const updateStopResponseStayOneRatingMax = 5;
+
+
+
 export const UpdateStopResponse = zod.object({
   "id": zod.string().uuid(),
   "tripId": zod.string().uuid(),
@@ -206,7 +262,16 @@ export const UpdateStopResponse = zod.object({
   "visitDate": zod.coerce.date().nullable(),
   "stopType": zod.string().nullable(),
   "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable(),
+  "stay": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "stopId": zod.string().uuid(),
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(updateStopResponseStayOneRatingMax).nullable(),
   "notes": zod.string().nullable()
+}),zod.null()])
 })
 
 
@@ -219,6 +284,87 @@ export const DeleteStopParams = zod.object({
 })
 
 export const DeleteStopResponse = zod.void()
+
+
+/**
+ * @summary Add the single accommodation stay for an owned stop
+ */
+export const CreateStayParams = zod.object({
+  "tripId": zod.coerce.string().uuid(),
+  "stopId": zod.coerce.string().uuid()
+})
+
+export const createStayBodyRatingMax = 5;
+
+
+
+export const CreateStayBody = zod.object({
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(createStayBodyRatingMax).nullish(),
+  "notes": zod.string().nullish()
+})
+
+export const createStayResponseRatingMax = 5;
+
+
+
+export const CreateStayResponse = zod.object({
+  "id": zod.string().uuid(),
+  "stopId": zod.string().uuid(),
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(createStayResponseRatingMax).nullable(),
+  "notes": zod.string().nullable()
+})
+
+
+/**
+ * @summary Replace an existing stay on an owned stop
+ */
+export const UpdateStayParams = zod.object({
+  "tripId": zod.coerce.string().uuid(),
+  "stopId": zod.coerce.string().uuid()
+})
+
+export const updateStayBodyRatingMax = 5;
+
+
+
+export const UpdateStayBody = zod.object({
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(updateStayBodyRatingMax).nullish(),
+  "notes": zod.string().nullish()
+})
+
+export const updateStayResponseRatingMax = 5;
+
+
+
+export const UpdateStayResponse = zod.object({
+  "id": zod.string().uuid(),
+  "stopId": zod.string().uuid(),
+  "accommodationType": zod.enum(['Hotel', 'Campground', 'Vacation Rental', 'Other']),
+  "checkIn": zod.coerce.date(),
+  "checkOut": zod.coerce.date(),
+  "rating": zod.number().int().min(1).max(updateStayResponseRatingMax).nullable(),
+  "notes": zod.string().nullable()
+})
+
+
+/**
+ * @summary Delete only the stay for an owned stop
+ */
+export const DeleteStayParams = zod.object({
+  "tripId": zod.coerce.string().uuid(),
+  "stopId": zod.coerce.string().uuid()
+})
+
+export const DeleteStayResponse = zod.void()
 
 
 /**
