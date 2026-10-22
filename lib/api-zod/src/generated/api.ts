@@ -9,6 +9,46 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary List only the current user's starred trips
+ */
+export const GetStarredTripsResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date(),
+  "destinationRegion": zod.string().nullable(),
+  "tripType": zod.string().nullable(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+export const GetStarredTripsResponse = zod.array(GetStarredTripsResponseItem)
+
+
+/**
+ * @summary Star an owned trip (idempotent)
+ */
+export const StarTripParams = zod.object({
+  "tripId": zod.coerce.string().uuid()
+})
+
+export const StarTripResponse = zod.object({
+  "isStarred": zod.boolean()
+})
+
+
+/**
+ * @summary Remove the current user's star from an owned trip (idempotent)
+ */
+export const UnstarTripParams = zod.object({
+  "tripId": zod.coerce.string().uuid()
+})
+
+export const UnstarTripResponse = zod.object({
+  "isStarred": zod.boolean()
+})
+
+
+/**
  * @summary Estimate road geometry from the owned saved itinerary; provider failures do not alter stops
  */
 export const GetTripRoutesParams = zod.object({

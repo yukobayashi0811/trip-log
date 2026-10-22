@@ -43,7 +43,13 @@ deleting a stop also removes its stay through the existing foreign-key cascade.
 The approved database schema already contained the stay table, so this feature
 adds no migration or deployment resource. See
 [accommodation verification and evidence](docs/accommodation-verification.md).
-Favorites, journal search and dashboard remain unimplemented.
+
+Feature 8 reuses the approved `stars` table for private, owner-checked trip
+favorites. Travelers can star trips from All Trips or Trip Detail, and browse,
+open, or unstar them from Starred Trips. Repeated star/unstar operations are
+idempotent; no schema migration or additional table is needed. See
+[star verification and ownership evidence](docs/stars-verification.md).
+Feature 9 search/filter/sort and Feature 10 dashboard remain unimplemented.
 
 ## Stack and setup
 
@@ -81,8 +87,8 @@ See [authentication verification](docs/auth-verification.md) for actual results
 and [database verification](docs/database-verification.md) for the database tests
 and the historical database checkpoint. See [Trip CRUD verification](docs/trip-crud-verification.md)
 and [actual ownership regression evidence](evidence/tests/README.md) for Feature 3.
-The full backend suite passes **240 tests** across authentication, schema,
-trip/stop/stay/routing API integration, provider safety and shared/HTTP validation. The Feature 3 CRUD browser
+The full backend suite passes **248 tests** across authentication, schema,
+trip/stop/stay/star/routing API integration, provider safety and shared/HTTP validation. The Feature 3 CRUD browser
 journey passed on desktop/mobile; the focused Feature 4 validation browser
 journey passed on desktop.
 Feature 5's actual desktop/mobile map-click CRUD/reorder/collapse browser

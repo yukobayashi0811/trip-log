@@ -1,0 +1,15 @@
+Controlled star-ownership test — final restored implementation
+UTC: 2026-10-22T18:31:02Z
+Command: LOG_LEVEL=error pnpm --filter @workspace/api-server exec vitest run src/tests/stars.test.ts -t 'User B cannot star'
+Exit code: 0
+Source SHA-256: bad99919ae0a9d8b48cb4aa1bd504dfc34e4fb1ea8fac9f3be4905fbb6b8c18b
+Test SHA-256: 43d607d2ed5d8eeba1304fea47087e822052cfee9878d50b5febaf97524fec0a
+
+
+ RUN  v5.0.5 /home/runner/workspace/generated-artifacts/feature-stars/artifacts/api-server
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 7 skipped (8)
+   Start at  18:31:01
+   Duration  1.24s (import 73%, tests 17%, transform 9%)

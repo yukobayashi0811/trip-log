@@ -1,0 +1,44 @@
+Controlled star-ownership test — intentional temporary owner-check defect
+UTC: 2026-10-22T18:30:47Z
+Command: LOG_LEVEL=error pnpm --filter @workspace/api-server exec vitest run src/tests/stars.test.ts -t 'User B cannot star'
+Exit code: 1 (expected failure)
+Defect source SHA-256: 55ba00d807606770a8f0f3a964026669dc7011f4fc13cb4a769ee7a25c3f82fa
+Test SHA-256: 43d607d2ed5d8eeba1304fea47087e822052cfee9878d50b5febaf97524fec0a
+
+
+ RUN  v5.0.5 /home/runner/workspace/generated-artifacts/feature-stars/artifacts/api-server
+
+ ❯ src/tests/stars.test.ts (8 tests | 1 failed | 7 skipped) 199ms
+   ❯ private trip stars against PostgreSQL (8)
+     × User B cannot star, unstar, list, or inspect User A's trip by known UUID 191ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tests/stars.test.ts > private trip stars against PostgreSQL > User B cannot star, unstar, list, or inspect User A's trip by known UUID
+AssertionError: expected 200 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 200
+
+ ❯ src/tests/stars.test.ts:124:26
+    122|     expect(listB.body).toEqual([]);
+    123|     expect(forgedList.body).toEqual([]);
+    124|     expect(starB.status).toBe(404);
+       |                          ^
+    125|     expect(starB.body).toEqual({ error: "Trip not found." });
+    126|     expect(unstarB.status).toBe(404);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  18:30:45
+   Duration  1.31s (import 70%, tests 17%, transform 13%)
+
+undefined
+/home/runner/workspace/generated-artifacts/feature-stars/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/tests/stars.test.ts -t User B cannot star

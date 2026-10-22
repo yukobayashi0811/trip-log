@@ -16,6 +16,7 @@ import TripsListPage from '@/pages/trips-list';
 import TripNewPage from '@/pages/trip-new';
 import TripDetailPage from '@/pages/trip-detail';
 import TripEditPage from '@/pages/trip-edit';
+import StarredTripsPage from '@/pages/starred-trips';
 import { AuthLoading } from '@/components/require-auth';
 
 const TripMapPage = lazy(() => import('@/pages/trip-map'));
@@ -303,6 +304,7 @@ function AccountRoute() {
 }
 
 const TripsRoute = () => <RequireAuth>{(uid) => <TripsListPage userId={uid} />}</RequireAuth>;
+const StarredTripsRoute = () => <RequireAuth>{(uid) => <StarredTripsPage userId={uid} />}</RequireAuth>;
 const TripNewRoute = () => <RequireAuth>{(uid) => <TripNewPage userId={uid} />}</RequireAuth>;
 const TripDetailRoute = () => <RequireAuth>{(uid) => <TripDetailPage userId={uid} />}</RequireAuth>;
 const TripMapRoute = () => <RequireAuth>{(uid) => <Suspense fallback={<AuthLoading />}><TripMapPage userId={uid} /></Suspense>}</RequireAuth>;
@@ -340,6 +342,7 @@ function ClerkProviderWithRoutes() {
               <Route path="/sign-up/*?" component={SignUpPage} />
               <Route path="/account" component={AccountRoute} />
               <Route path="/trips" component={TripsRoute} />
+              <Route path="/starred" component={StarredTripsRoute} />
               <Route path="/trips/new" component={TripNewRoute} />
               <Route path="/map" component={TripMapRoute} />
               <Route path="/trips/:id/map" component={TripMapRoute} />

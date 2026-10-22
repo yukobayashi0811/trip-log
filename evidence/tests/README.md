@@ -56,3 +56,25 @@ The authenticated desktop/mobile Preview flow could not be run with the
 available non-interactive, signed-out browser; no CRUD screenshots are claimed.
 See [`docs/accommodation-verification.md`](../../docs/accommodation-verification.md)
 for the exact limitation and remaining manual checks.
+
+## Feature 8 — star ownership
+
+This controlled red/green pair uses the real Express/PostgreSQL integration
+fixture with only Clerk's external identity boundary mocked. It verifies that
+User B cannot star, unstar, list, or read User A's known trip; it also attempts
+forged user ID headers/body/query values. The controlled defect removes only the
+authenticated-user predicate from the trip ownership lock in the star endpoint.
+The same test then receives HTTP 200 instead of its required 404. Restoring the
+predicate makes that targeted test pass again.
+
+This proves that the test detects that specific missing server-side ownership
+check. It does not test Clerk's identity provider itself or authenticated
+browser behavior. The complete Feature 8 API suite separately covers
+idempotence, persisted favorites, empty/list results, invalid IDs, multiple
+users/trips, unauthenticated requests, and trip-delete cascade.
+
+- [Actual red Vitest output](stars-isolation-red.txt) /
+  [red screenshot](stars-isolation-red.jpg)
+- [Restored green output](stars-isolation-green.txt) /
+  [green screenshot](stars-isolation-green.jpg)
+- [Exact temporary owner-check diff](stars-isolation-controlled-defect.diff)

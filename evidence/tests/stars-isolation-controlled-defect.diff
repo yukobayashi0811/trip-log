@@ -1,0 +1,10 @@
+--- a/artifacts/api-server/src/routes/stars.ts
++++ b/artifacts/api-server/src/routes/stars.ts
+@@ -47,7 +47,6 @@
+         .where(
+           and(
+             eq(trips.id, parsed.data),
+-            eq(trips.userId, res.locals.user.id),
+           ),
+         )
+         .for("update");

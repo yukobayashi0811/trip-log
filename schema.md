@@ -2,7 +2,8 @@
 
 Drizzle schema: `lib/db/src/schema/`. PostgreSQL is the source of truth for
 foreign keys, uniqueness, checks, and generated values. All five approved tables
-exist. Trip/stop/stay APIs and UI are implemented; stars are schema-only.
+exist. Trip/stop/stay APIs and UI are implemented; Feature 8 adds owner-scoped
+star/unstar and starred-trip listing without changing the approved schema.
 
 ## Columns
 
@@ -63,10 +64,12 @@ Clerk ID, not email, is the identity key. Account synchronization obtains the
 verified primary email server-side and atomically upserts by the unique Clerk ID.
 The internal UUID and creation timestamp remain stable.
 
-Relational integrity is **not authorization**. Current trip, stop, routing and
-stay APIs require a verified user and scope the parent trip and all descendants
-to the internal `res.locals.user.id`. Foreign keys alone do not prohibit one
-user's ID from being paired with another user's trip in a future star operation.
+Relational integrity is **not authorization**. Trip, stop, routing, stay and
+star APIs require a verified user and scope the parent trip and descendants to
+the internal `res.locals.user.id`. Star endpoints lock and verify trip ownership
+before inserting or deleting a star; the favorites query joins both the current
+user's star and that same user's trip. Foreign keys alone would not prohibit one
+user's ID from being paired with another user's trip.
 
 ## Applying and testing
 

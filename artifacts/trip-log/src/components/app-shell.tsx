@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { useClerk } from '@clerk/react';
 import { Link, useLocation } from 'wouter';
-import { BookOpen, Loader2, Map as MapIcon, LogOut, UserRound } from 'lucide-react';
+import { BookOpen, Loader2, Map as MapIcon, LogOut, Star, UserRound } from 'lucide-react';
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -43,6 +43,7 @@ export function AppShell({ children, width = 'max-w-5xl' }: { children: ReactNod
   const [location] = useLocation();
   const onMap = location === '/map' || /^\/trips\/[^/]+\/map$/.test(location);
   const onTrips = !onMap && (location === '/trips' || location.startsWith('/trips/'));
+  const onStarred = location === '/starred';
   return (
     <div className="paper-grain min-h-[100dvh]">
       <header className="relative z-20 border-b border-border/70 bg-background/80 backdrop-blur">
@@ -53,6 +54,7 @@ export function AppShell({ children, width = 'max-w-5xl' }: { children: ReactNod
           </Link>
           <nav aria-label="Main" className="flex items-center gap-1 sm:gap-2">
             <NavLink href="/trips" active={onTrips} icon={<BookOpen className="h-4 w-4" />} label="All Trips" testId="link-nav-trips" />
+            <NavLink href="/starred" active={onStarred} icon={<Star className="h-4 w-4" />} label="Starred Trips" testId="link-nav-starred" />
             <NavLink href="/map" active={onMap} icon={<MapIcon className="h-4 w-4" />} label="Map" testId="link-nav-map" />
             <NavLink href="/account" active={location === '/account'} icon={<UserRound className="h-4 w-4" />} label="Account" testId="link-nav-account" />
             <LogoutButton compact />

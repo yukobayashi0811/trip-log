@@ -12,6 +12,7 @@ export * from './drivingRouteStatus';
 export * from './healthStatus';
 export * from './invalidTripRequestResponse';
 export * from './oneStopResponse';
+export * from './starState';
 export * from './stay';
 export * from './stayAccommodationType';
 export * from './stayInput';
