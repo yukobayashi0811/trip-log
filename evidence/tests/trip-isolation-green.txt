@@ -1,0 +1,13 @@
+UTC: 2026-10-22T02:32:15Z
+Command: LOG_LEVEL=error pnpm --filter @workspace/api-server exec vitest run src/tests/trips.test.ts -t "User B cannot" --reporter=default
+Restored owner-predicate source SHA256: 5aa86fce95944dc8d50edad95a3c260eb5554cf0bb246058c04df3d2f2e5a82e  artifacts/api-server/src/routes/trips.ts
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+ ✓ src/tests/trips.test.ts (20 tests | 19 skipped) 160ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 19 skipped (20)
+   Start at  02:32:15
+   Duration  1.05s (import 74%, tests 17%, transform 9%)
+

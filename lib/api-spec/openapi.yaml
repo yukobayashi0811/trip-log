@@ -11,6 +11,88 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /trips:
+    get:
+      operationId: listTrips
+      summary: List only the current user's trips, newest start date first
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200":
+          description: Own trips
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Trip" }
+        "401": { description: Sign-in required }
+        "503": { description: Account synchronization unavailable }
+    post:
+      operationId: createTrip
+      summary: Create a trip for the current user
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TripInput" }
+      responses:
+        "201":
+          description: Created trip
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Trip" }
+        "400": { description: Invalid input }
+        "401": { description: Sign-in required }
+        "503": { description: Account synchronization unavailable }
+  /trips/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      operationId: getTrip
+      summary: Open one owned trip
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200":
+          description: Own trip
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Trip" }
+        "400": { description: Invalid ID }
+        "401": { description: Sign-in required }
+        "404": { description: Not found or not owned }
+        "503": { description: Account synchronization unavailable }
+    put:
+      operationId: updateTrip
+      summary: Replace editable fields of one owned trip
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TripInput" }
+      responses:
+        "200":
+          description: Updated own trip
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Trip" }
+        "400": { description: Invalid input or ID }
+        "401": { description: Sign-in required }
+        "404": { description: Not found or not owned }
+        "503": { description: Account synchronization unavailable }
+    delete:
+      operationId: deleteTrip
+      summary: Delete one owned trip and its dependent records
+      security: [{ sessionCookie: [] }]
+      responses:
+        "204": { description: Deleted }
+        "400": { description: Invalid ID }
+        "401": { description: Sign-in required }
+        "404": { description: Not found or not owned }
+        "503": { description: Account synchronization unavailable }
   /auth/me:
     get:
       operationId: getCurrentUser
@@ -48,6 +130,29 @@ components:
       in: cookie
       name: __session
   schemas:
+    TripInput:
+      type: object
+      additionalProperties: false
+      required: [title, startDate, endDate]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        destinationRegion: { type: [string, "null"], maxLength: 200 }
+        tripType: { type: [string, "null"], maxLength: 100 }
+        notes: { type: [string, "null"], maxLength: 20000 }
+    Trip:
+      type: object
+      required: [id, title, startDate, endDate, destinationRegion, tripType, notes, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        destinationRegion: { type: [string, "null"] }
+        tripType: { type: [string, "null"] }
+        notes: { type: [string, "null"] }
+        createdAt: { type: string, format: date-time }
     CurrentUser:
       type: object
       required: [id, email, createdAt]

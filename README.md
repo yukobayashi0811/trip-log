@@ -10,9 +10,11 @@ account page backed by PostgreSQL. Feature 2 adds the complete relational
 foundation: `users`, `trips`, `stops`, `stays`, and `stars`, with constraints,
 indexes, cascading foreign keys, and typed Drizzle relationships.
 
-Trip CRUD and the map, routing, accommodations, favorites, search, and dashboard
-APIs/UI are not implemented yet. The Feature 2 schema is development-only until
-the owner merges and republishes it.
+Feature 3 adds owner-scoped trip creation, listing, details, editing, and deletion
+with explicit confirmation. Forms support title, date-only start/end dates,
+region, trip type, and notes. Loading, retryable error, not-found, and honest
+empty states are included. The map, routing, stops/accommodations UI, favorites,
+search, and dashboard are not implemented yet.
 
 ## Stack and setup
 
@@ -47,14 +49,18 @@ external identity boundary, not PostgreSQL, use uniquely prefixed synthetic
 test identities, and remove only their own rows after the run.
 See [authentication verification](docs/auth-verification.md) for actual results
 and [database verification](docs/database-verification.md) for the database tests
-and current production checkpoint. The full suite currently has 25 passing
-tests; database test fixtures run in rollback transactions and do not populate
-travel history.
+and the historical database checkpoint. See [Trip CRUD verification](docs/trip-crud-verification.md)
+and [actual ownership regression evidence](evidence/tests/README.md) for Feature 3.
+The full backend suite passes **46 tests** across authentication, schema, and
+trip API integration. The signed-in CRUD browser journey also passed on desktop
+and mobile.
+Database fixtures roll back; API integration tests remove their own synthetic
+accounts and dependent records. No tests invent genuine travel history.
 
 ## Code map
 
 - `artifacts/trip-log`: browser UI, embedded account forms, shared visual styles
-- `artifacts/api-server`: Express, Clerk production proxy, guarded account API
+- `artifacts/api-server`: Express, Clerk production proxy, guarded account/trip APIs
 - `lib/db`: Drizzle schema/database connection
 - `lib/api-spec`: source OpenAPI contract and generation configuration
 - `lib/api-client-react`, `lib/api-zod`: generated client and response validation
@@ -72,7 +78,29 @@ or the external Clerk ID and is marked `Cache-Control: no-store`.
 
 Future private routes must mount `requireUser` and scope database queries to
 `res.locals.user.id`. Never accept ownership from client IDs or email addresses.
-No role/admin system or trip-level authorization is claimed by this feature.
+Trip operations already use this guard. Reads, updates, and deletes include both
+the trip UUID and the authenticated internal owner UUID in the SQL predicate.
+Unknown and non-owned trips return the same 404; unauthenticated operations
+return 401. Create never accepts client-supplied ownership. No role/admin system.
+
+## Trip API
+
+All routes require a verified Clerk session and resolve its internal UUID.
+
+| Method | Path | Result |
+|---|---|---|
+| GET | `/api/trips` | Own trips, newest start date first |
+| POST | `/api/trips` | Create own trip; 201 |
+| GET | `/api/trips/:id` | Own trip or 404 |
+| PUT | `/api/trips/:id` | Replace editable fields of own trip |
+| DELETE | `/api/trips/:id` | Delete own trip and descendants; 204 |
+
+Input: `title`, `startDate`, `endDate`, optional `destinationRegion`, `tripType`,
+`notes`. PUT is a full form replacement, not a partial patch: title/dates are
+required, and omitted/empty/null optional fields clear their old values.
+Calendar dates remain `YYYY-MM-DD` strings. Text is trimmed; nonblank title,
+real dates, end ≥ start, and bounded field lengths are enforced server-side.
+Unknown properties (including owner/id/timestamps) are rejected.
 
 ## Review and publishing
 
@@ -80,7 +108,8 @@ All changes use Issues, feature branches, prompt logs, tests, and reviewed PRs.
 Only the owner merges. After each merged feature, once deployable, review costs,
 publish through the owner-controlled Replit Publish flow, and verify the live
 feature before starting the next one. Development and production Clerk users
-and databases are separate. Authentication is published at
-https://trip-log.replit.app; Feature 2's schema is not yet published.
+and databases are separate. Authentication and the five-table Feature 2 schema
+are published at https://trip-log.replit.app. Feature 3 is development-only
+until its PR is personally merged and the owner republishes.
 Replit applies managed production schema changes through Publish; no application
 startup DDL or production migration script is used.

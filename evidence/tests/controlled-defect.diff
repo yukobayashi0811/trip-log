@@ -1,0 +1,6 @@
+--- correct ownership predicate
++++ controlled defect, used only during the red test
+@@
+ const ownedTrip = (id: string, userId: string) =>
+-  and(eq(trips.id, id), eq(trips.userId, userId));
++  and(eq(trips.id, id));

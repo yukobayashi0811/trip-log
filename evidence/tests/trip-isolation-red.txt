@@ -1,0 +1,65 @@
+UTC: 2026-10-22T02:32:01Z
+Command: LOG_LEVEL=error pnpm --filter @workspace/api-server exec vitest run src/tests/trips.test.ts -t "User B cannot" --reporter=default
+Defective owner-predicate source SHA256: f6beabd31a0930167c98ff46b3b108f5c909cb5873f68a6ba07c31ffbcceacb1  artifacts/api-server/src/routes/trips.ts
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+ ❯ src/tests/trips.test.ts (20 tests | 1 failed | 19 skipped) 167ms
+   ❯ trip CRUD against real PostgreSQL (20)
+     ↓ creates, lists, opens, edits, clears optional text, reloads, and deletes an owned trip
+     × User B cannot read, update, or delete User A's trip even with its ID 161ms
+     ↓ rejects every unauthenticated operation and forged identity headers without changing data
+     ↓ rejects forged ownership/id/timestamp fields on create and update
+     ↓ rejects invalid create/update input 0 without changing the owned row
+     ↓ rejects invalid create/update input 1 without changing the owned row
+     ↓ rejects invalid create/update input 2 without changing the owned row
+     ↓ rejects invalid create/update input 3 without changing the owned row
+     ↓ rejects invalid create/update input 4 without changing the owned row
+     ↓ rejects invalid create/update input 5 without changing the owned row
+     ↓ rejects invalid create/update input 6 without changing the owned row
+     ↓ rejects invalid create/update input 7 without changing the owned row
+     ↓ rejects invalid create/update input 8 without changing the owned row
+     ↓ rejects invalid create/update input 9 without changing the owned row
+     ↓ rejects invalid create/update input 10 without changing the owned row
+     ↓ rejects invalid create/update input 11 without changing the owned row
+     ↓ requires all mandatory fields, permits a one-day trip, and normalizes missing optional text
+     ↓ returns 400 for malformed IDs and identical 404s for absent/unowned IDs
+     ↓ uses a deterministic newest-first owner-only list
+     ↓ deletes descendants via the existing cascades while preserving another trip and the user
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tests/trips.test.ts > trip CRUD against real PostgreSQL > User B cannot read, update, or delete User A's trip even with its ID
+AssertionError: expected { read: 200, update: 200, delete: 204 } to deeply equal { read: 404, update: 404, delete: 404 }
+
+- Expected
++ Received
+
+  {
+-   "delete": 404,
+-   "read": 404,
+-   "update": 404,
++   "delete": 204,
++   "read": 200,
++   "update": 200,
+  }
+
+ ❯ src/tests/trips.test.ts:88:8
+     86|     const remove = await request(app).delete(`/api/trips/${trip.id}`);
+     87|     expect({ read: read.status, update: update.status, delete: remove.…
+     88|       .toEqual({ read: 404, update: 404, delete: 404 });
+       |        ^
+     89|     expect(read.body).toEqual({ error: "Trip not found." });
+     90|     const [preserved] = await db.select().from(trips).where(eq(trips.i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 skipped (20)
+   Start at  02:32:01
+   Duration  1.32s (import 77%, tests 14%, transform 9%)
+
+undefined
+/home/runner/workspace/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/tests/trips.test.ts -t User B cannot --reporter=default

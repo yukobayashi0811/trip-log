@@ -1,0 +1,32 @@
+UTC: 2026-10-22T02:31:41Z
+Command: LOG_LEVEL=error pnpm --filter @workspace/api-server exec vitest run src/tests/trips.test.ts -t "User B cannot" --reporter=verbose
+Owner-predicate source SHA256: 5aa86fce95944dc8d50edad95a3c260eb5554cf0bb246058c04df3d2f2e5a82e  artifacts/api-server/src/routes/trips.ts
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > creates, lists, opens, edits, clears optional text, reloads, and deletes an owned trip
+ ✓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > User B cannot read, update, or delete User A's trip even with its ID 349ms
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects every unauthenticated operation and forged identity headers without changing data
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects forged ownership/id/timestamp fields on create and update
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 0 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 1 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 2 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 3 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 4 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 5 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 6 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 7 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 8 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 9 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 10 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > rejects invalid create/update input 11 without changing the owned row
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > requires all mandatory fields, permits a one-day trip, and normalizes missing optional text
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > returns 400 for malformed IDs and identical 404s for absent/unowned IDs
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > uses a deterministic newest-first owner-only list
+ ↓ src/tests/trips.test.ts > trip CRUD against real PostgreSQL > deletes descendants via the existing cascades while preserving another trip and the user
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 19 skipped (20)
+   Start at  02:31:42
+   Duration  1.36s (import 65%, tests 29%, transform 5%)
+

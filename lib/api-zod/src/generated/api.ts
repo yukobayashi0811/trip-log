@@ -9,6 +9,123 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary List only the current user's trips, newest start date first
+ */
+export const ListTripsResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date(),
+  "destinationRegion": zod.string().nullable(),
+  "tripType": zod.string().nullable(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+export const ListTripsResponse = zod.array(ListTripsResponseItem)
+
+
+/**
+ * @summary Create a trip for the current user
+ */
+export const createTripBodyTitleMax = 200;
+
+export const createTripBodyDestinationRegionMax = 200;
+
+export const createTripBodyTripTypeMax = 100;
+
+export const createTripBodyNotesMax = 20000;
+
+
+
+export const CreateTripBody = zod.object({
+  "title": zod.string().min(1).max(createTripBodyTitleMax),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date(),
+  "destinationRegion": zod.string().max(createTripBodyDestinationRegionMax).nullish(),
+  "tripType": zod.string().max(createTripBodyTripTypeMax).nullish(),
+  "notes": zod.string().max(createTripBodyNotesMax).nullish()
+})
+
+export const CreateTripResponse = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date(),
+  "destinationRegion": zod.string().nullable(),
+  "tripType": zod.string().nullable(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Open one owned trip
+ */
+export const GetTripParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const GetTripResponse = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date(),
+  "destinationRegion": zod.string().nullable(),
+  "tripType": zod.string().nullable(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Replace editable fields of one owned trip
+ */
+export const UpdateTripParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const updateTripBodyTitleMax = 200;
+
+export const updateTripBodyDestinationRegionMax = 200;
+
+export const updateTripBodyTripTypeMax = 100;
+
+export const updateTripBodyNotesMax = 20000;
+
+
+
+export const UpdateTripBody = zod.object({
+  "title": zod.string().min(1).max(updateTripBodyTitleMax),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date(),
+  "destinationRegion": zod.string().max(updateTripBodyDestinationRegionMax).nullish(),
+  "tripType": zod.string().max(updateTripBodyTripTypeMax).nullish(),
+  "notes": zod.string().max(updateTripBodyNotesMax).nullish()
+})
+
+export const UpdateTripResponse = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date(),
+  "destinationRegion": zod.string().nullable(),
+  "tripType": zod.string().nullable(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete one owned trip and its dependent records
+ */
+export const DeleteTripParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const DeleteTripResponse = zod.void()
+
+
+/**
  * @summary Resolve the signed-in Clerk session to an internal account
  */
 export const GetCurrentUserResponse = zod.object({

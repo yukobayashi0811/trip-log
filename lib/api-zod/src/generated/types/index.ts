@@ -8,3 +8,5 @@
 
 export * from './currentUser';
 export * from './healthStatus';
+export * from './trip';
+export * from './tripInput';
