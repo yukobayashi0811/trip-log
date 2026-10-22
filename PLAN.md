@@ -1,63 +1,42 @@
 # Trip Log — Initial Project Plan
 
-Planning draft for owner review. Deadline: November 4, 2026.
-No application features may be implemented until the owner personally merges
-the planning PR and confirms the merge.
+**Deadline:** November 4, 2026. Planning draft: implementation starts only after
+the owner personally merges this PR and confirms.
 
 ## 1. Pitch
 
-**Trip Log — Your journeys, mapped.** is a personal travel journal for road
-trips, national parks, camping, family vacations, and other travel. Users save
-trips, ordered geographic stops, and overnight stays, then explore their travel
-history and estimated road routes on a private interactive map.
+**Trip Log — Your journeys, mapped.** preserves travel memories through private
+trips, ordered geographic stops, overnight stays, and estimated road routes.
+It serves road trips, parks, camping, family vacations, and other travel—not
+booking, social networking, or AI planning.
 
-The owner wants to preserve past travel experiences and add new trips during
-this semester; the app should also work for other travelers. Expected use is
-whenever recording a past experience or taking a new trip; no weekly frequency
-was supplied. It is not a booking platform, social network, or AI planner.
+**Proposed usage, subject to owner approval:** record at least five genuine
+previous trips this semester and update the journal after each new trip.
+The owner supplies the real travel details; the app also welcomes other travelers.
 
 ## 2. Features — Ten User Stories in Implementation Order
 
-Each numbered item is one feature PR, preceded by this planning PR.
+One feature per PR, following this planning PR; no additional prerequisite PRs.
 
-1. **Sign-up and login:** As a traveler, I want to create an account, sign in,
-   and sign out so that only I can access my private travel records.
-2. **Relational database:** As a traveler, I want my trips, stops, stays, and
-   stars saved with reliable relationships so that my history persists safely.
-3. **CRUD:** As a traveler, I want to create, list, open, edit, and delete trips
-   so that my journal stays accurate. Stop and stay CRUD is completed in the map
-   and accommodation features; trip deletion requires confirmation.
-4. **Validation:** As a traveler, I want clear input errors so that blank names,
-   invalid coordinates, inconsistent dates, and out-of-range ratings cannot
-   corrupt my journal. Basic safety validation accompanies earlier writes;
-   this PR completes consistent frontend/backend validation.
-5. **Interactive travel map:** As a traveler, I want to select a trip, view its
-   markers, click the map to name a location, and add, edit, reorder, or delete
-   stops so that I can record my itinerary geographically.
-6. **Road-based route builder:** As a traveler, I want estimated road routes
-   between ordered driving stops, including return trips, so that I can visualize
-   the journey. Flying and Other segments must not appear as driving routes.
-7. **Accommodation tracker:** As a traveler, I want to add, edit, and delete
-   hotels, campgrounds, vacation rentals, or other stays at stops so that I can
-   recall where I slept and see overnight locations in the itinerary and map.
-8. **Stars:** As a traveler, I want to star and unstar my own trips and open a
-   dedicated starred-trips page so that favorites are easy to revisit.
-9. **Search, filter, and sort:** As a traveler, I want title search, region/year/
-   starred filters, and newest/oldest ordering so that I can find saved trips.
-10. **Dashboard:** As a traveler, I want total trips, stops, accommodation nights,
-    and a trips-by-month chart so that I can understand my travel history.
+1. **Accounts:** As a traveler, I want in-app sign-up, login, and logout so that my records remain private.
+2. **Database:** As a traveler, I want relationally stored trips, stops, stays, and stars so that my history persists reliably.
+3. **CRUD:** As a traveler, I want to create, list, open, edit, and delete trips with deletion confirmation so that my journal stays accurate.
+4. **Validation:** As a traveler, I want friendly frontend/backend input errors so that invalid records cannot be saved.
+5. **Map:** As a traveler, I want trip selection, markers/popups, automatic bounds, map-click coordinates, manually named stops, and stop add/edit/reorder/delete so that I can record itineraries geographically.
+6. **Routing:** As a traveler, I want estimated road routes through ordered driving stops, including intermediate stops and return trips, so that I can visualize journeys; Flying/Other must not appear as driving routes.
+7. **Accommodations:** As a traveler, I want add/edit/delete for hotels, campgrounds, vacation rentals, and other stays at stops, visible on maps/itineraries, so that I remember overnight locations.
+8. **Stars:** As a traveler, I want to star/unstar my own trips and view a dedicated favorites page so that I can revisit them easily.
+9. **Search:** As a traveler, I want title search, region/year/starred filters, and newest/oldest sorting so that I can find saved trips.
+10. **Dashboard:** As a traveler, I want total trips, stops, accommodation nights, and trips by month so that I understand my travel history.
 
-All data and statistics belong to the authenticated user. Stop order controls
-routes; coordinate/order/mode changes invalidate affected route requests.
-Design-system creation and presentation precede application UI work after
-planning approval. Its delivery requires its own reviewed design-only PR,
-not a combined application-feature PR. This adds one prerequisite PR to the
-specified eleven-PR sequence; it does not remove any required feature.
+All features use actual owner-scoped data. Basic safety validation accompanies
+initial writes; feature 4 completes consistent validation. Stop/stay CRUD lands
+with features 5/7. Reusable styles are part of normal UI development.
 
 ## 3. Database
 
-PostgreSQL with Drizzle ORM. UUID primary keys are generated by the database.
-Required fields are NOT NULL; optional fields below are nullable.
+PostgreSQL/Drizzle; database-generated UUID primary keys. Required fields are
+NOT NULL; “optional” means nullable.
 
 | Table | Columns, types, and constraints |
 |---|---|
@@ -68,130 +47,101 @@ Required fields are NOT NULL; optional fields below are nullable.
 | `stars` | `user_id uuid NOT NULL FK → users.id`; `trip_id uuid NOT NULL FK → trips.id`; `created_at timestamptz NOT NULL DEFAULT now()`; composite `PK(user_id, trip_id)` |
 
 Relationships: `users 1 → many trips 1 → many stops 1 → zero-or-one stays`;
-`users 1 → many stars ← many-to-1 trips`. All favorites use `stars`.
-
-Use cascading foreign-key deletion from trips to stops/stars and from stops
-to stays. User deletion, if later supported, cascades owned data. Check trimmed
-nonempty titles/names, end ≥ start, latitude −90…90, longitude −180…180,
-nonnegative stop order, check-out > check-in, ratings 1…5 when supplied, and
-allowed transport/accommodation values. Reorder stops atomically. Index foreign
-keys and common owner/date queries. Idempotent first-sign-in user creation uses
-the unique Clerk ID to prevent duplicates. Backend ownership checks traverse
-trip ownership for every stop/stay operation and disallow cross-owner stars.
-No passwords or third-party route geometry are stored in these tables.
+`users 1 → many stars ← many-to-1 trips`. All favorites share `stars`.
+Cascade trip deletion to stops/stars and stop deletion to stays; reorder
+atomically. Index foreign keys/owner dates. Check trimmed nonblank names/titles,
+end ≥ start, latitude −90…90, longitude −180…180, nonnegative order,
+check-out > check-in, ratings 1…5, and allowed transport/accommodation values.
+Create users idempotently by unique Clerk ID; enforce ownership in backend
+queries, including related records and stars. Never store passwords.
 
 ## 4. Tests
 
-**A — User data isolation.** Given User A owns a trip with stops, a stay, and a
-star, when User B requests or mutates those resources using their IDs, then the
-backend denies access and records remain unchanged. Cover read, update, delete,
-reorder, route lookup, and favorite operations; unauthenticated requests fail.
+**A — Data isolation:** Given User A owns a trip, when User B reads, edits, or
+deletes it by ID, then the backend denies access and preserves the record.
+Start this test with trip CRUD after authentication/database foundations.
+Extend it in the corresponding feature PRs to stop access/reordering, routing
+lookups, accommodations, and stars; include unauthenticated requests.
 
-**B — Dashboard calculation.** Given a user has two stays of one and two nights,
-when dashboard statistics are calculated, then nights equals three. Include
-additional stops/stars and another user's records to catch duplicate joins and
-ownership errors. Use date-only arithmetic, count distinct entities correctly,
-and group trip starts by calendar month.
+**B — Dashboard:** Given a user has two stays totaling three nights, when
+dashboard statistics are calculated, then total nights equals three. Add another
+user's records and extra stops/stars to detect ownership errors/duplicate joins.
+Use date-only night calculations and group trip starts by month.
 
-Use Vitest and backend integration tests with controlled test users/records.
-For each required test: execute green, temporarily introduce a controlled
-relevant defect, execute red and capture the real result, restore the fix, and
-execute/capture green again. Keep genuine evidence under `evidence/tests/` and
-link it in the relevant PR with a plain-English explanation and one realistic
-change that would break the test. Never leave broken code or fabricate evidence.
+Use Vitest/backend integration tests. For both tests, run green; introduce a
+controlled defect; capture an actual red run; restore and capture green.
+Save screenshots in `evidence/tests/`; link evidence, a plain-English explanation,
+and a realistic breaking change in each relevant PR. Never fabricate results or
+leave deliberate defects.
 
 ## 5. Technologies and Delivery
 
 | Choice | Reason |
 |---|---|
-| Replit Agent | Automates implementation, documentation, and authorized GitHub work while preserving meaningful prompts. |
-| React + TypeScript / Vite | Typed, responsive browser UI compatible with the existing project foundation. |
-| Express + TypeScript | Lightweight backend for ownership enforcement, validation, and server-only routing calls. |
-| Replit PostgreSQL + Drizzle | Managed relational persistence with explicit keys, constraints, and typed queries. |
-| Replit-managed Clerk | In-app accounts without storing passwords; internal users reference verified Clerk IDs. |
-| Leaflet + React Leaflet | Interactive markers, map clicks, bounds fitting, and route rendering; pin mutually compatible React versions at implementation. |
-| OpenStreetMap standard raster tiles | Suitable initial low-volume map source, subject to attribution and tile-use policy; no bulk/offline prefetch. |
-| openrouteservice Standard Free | Estimated driving geometry without paid routing infrastructure. |
-| Vitest | Repeatable automated checks for isolation, validation, and aggregate calculations. |
-| GitHub private repository | Verifiable Issues, feature branches, prompt logs, and owner-reviewed PRs. |
-| Replit publishing, proposed Autoscale | Keeps deployment on the existing platform; assess credits/costs and owner approval before publishing. |
+| Replit Agent | Automates development, documentation, and authorized GitHub operations. |
+| React + TypeScript / Vite | Provides typed, responsive browser UI. |
+| Express + TypeScript | Handles backend ownership, validation, and private API calls. |
+| Replit PostgreSQL + Drizzle | Provides managed relational persistence and typed queries. |
+| Replit-managed Clerk | Provides in-app accounts without application-stored passwords. |
+| Leaflet + React Leaflet | Supports markers, map clicks, bounds fitting, and routes. |
+| OpenStreetMap standard raster tiles | Supplies low-volume maps with attribution and tile-policy compliance; no bulk/offline prefetch. |
+| openrouteservice Standard Free | Supplies estimated road geometry without paid routing infrastructure. |
+| Vitest | Provides repeatable backend tests. |
+| Private GitHub repository | Preserves Issues, branches, prompts, and reviewed PR history. |
+| Replit publishing, proposed Autoscale | Keeps hosting on the existing platform, subject to cost review. |
 
-Routing uses server-only `ORS_API_KEY` and
-`POST https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson`,
-with `[longitude, latitude]` coordinates. Label output **Estimated Driving
-Route**; it is not a historical GPS track. Request only changed driving
-segments, debounce edits, limit repeated/in-flight calls, and respect quotas.
-Do not permanently retain geometry until licensing/storage rights are verified.
+Routing: server-only `ORS_API_KEY`;
+`POST https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson`;
+coordinates `[longitude, latitude]`. Label **Estimated Driving Route**, never
+historical GPS. Recalculate changed driving segments on coordinate/order/mode
+changes; debounce/deduplicate requests. No permanent geometry storage without
+verified licensing permission.
 
-Workflow: planning Issue → `plan/initial` → planning-only PR → owner merge and
-confirmation; then design-only prerequisite and ten feature branches in order:
-`feature/auth`, `feature/database`, `feature/trip-crud`, `feature/validation`,
-`feature/map`, `feature/routing`, `feature/stays`, `feature/stars`,
-`feature/search`, `feature/dashboard`. Every PR links its Issue with `closes #N`,
-records actual prompts, tests, bugs, and material decisions. Never auto-merge or
-commit application changes to main. Publishing after approved merges uses the
-owner-controlled Publish action; do not claim a live URL or successful release
-without verification. Planning/design-only work is not a deployable app.
+Sequence: planning PR → owner merge/confirmation → ten feature PRs in section 2
+order (eleven PRs total). Each feature gets an Issue, branch from latest main,
+actual prompt log, tests, and PR with `closes #N`, decisions/bugs/evidence.
+Never auto-merge or commit directly to main. Stop for personal review/merge.
+**After each merged feature PR, once the app is deployable, publish the update
+and verify the changed feature on the live URL before starting the next feature.**
+Check costs first, use the owner-controlled Publish action, and report the URL,
+verification result, or any blocker honestly; planning is not deployable.
 
-Maintain README.md, schema.md, prompts, and real test evidence as features ship.
-Keep this original plan intact; append Plan vs. Reality at the end with columns:
+Maintain README.md, schema.md, prompts, and evidence. After development, preserve
+the approved plan and append Plan vs. Reality using:
 `Planned feature | Shipped / Changed / Cut | Status (Done/Backlogged) | Learning | What changed and why (one line)`.
 
 ## 6. Design
 
-Create and present a shared Trip Log design system after planning approval and
-before the web app. Every app UI consumes its documented tokens and components.
-Use warm off-white surfaces, muted teal/forest accents, readable type, simple
-navigation, clean cards, subtle borders, and responsive touch-friendly controls.
-Google My Maps and Polarsteps are general inspiration, not copying targets.
+Warm off-white, muted teal/forest accents, readable typography, simple navigation,
+clean cards/subtle borders, accessible states, and touch-friendly responsive UI.
+Build reusable styles/components within normal UI feature work—no separate
+design-system PR or prerequisite. Google My Maps/Polarsteps are inspiration only.
 
 Pages: landing/sign-up/login, My Travel Map, All Trips, create/edit trip, trip
-detail, Starred Trips, and Dashboard. Desktop emphasizes a large map and trip
-sidebar; mobile is map-first with a collapsible trip list/itinerary. Distinguish
-stays from ordinary stops. Detail includes dates, region, map, ordered stops,
-stays, notes, star, edit, and confirmed deletion. Include accessible errors,
-loading states, and honest empty states instead of invented travel data.
+detail, Starred Trips, Dashboard. Desktop: large map/trip sidebar; mobile:
+map-first/collapsible itinerary. Distinguish stays from stops. Detail shows dates,
+region, map/routes, ordered stops/stays, notes, star/edit/delete. Use honest empty
+states, not fabricated travel records.
 
 ## 7. Risks and Cuts
 
-**Primary risk: road routing.** Missing credentials, quotas, API downtime, route
-distance/waypoint limits, or unreachable stops must leave saved records and map
-markers intact with a clear error. Never substitute a straight line for failed
-driving geometry. Preserve intermediate stops and return trips. Verify provider
-restrictions, licensing, and attribution before integration.
+**Routing (highest risk):** missing key, timeouts, quotas, unreachable stops, and
+distance/waypoint limits must preserve records/markers and show clear errors;
+never replace failed driving geometry with straight lines. Verify provider
+limits/licensing/attribution and compatible React/Leaflet versions.
 
-**Approval/availability risks:** New empty GitHub repositories need a base
-commit before a PR into main. The owner authorized one empty, file-free bootstrap
-commit, preferably on a separate bootstrap branch from which main is established.
-The connected Git Database API rejects initialization of an empty repository;
-authenticated Git transport was required and has now been authorized. The empty
-commit was created on `bootstrap/empty`, and main was initialized at that same
-commit without project files.
-All subsequent project changes must use branches and PRs, never direct main commits.
-Clerk and route credentials are not configured/tested yet. Development and
-production identities/data are separate; verify independent live sign-up and
-database access at release. Existing PostgreSQL answered a read-only probe;
-no application schema or services have been implemented.
+**Availability:** PostgreSQL passed a read-only probe; Clerk/routing remain
+unconfigured/untested. Verify separate production identities/data, live sign-up,
+and database access. The authorized file-free `bootstrap/empty` commit established
+main solely to enable this planning PR; no further direct main commits.
 
-**Cost risk:** School-provided Core is user-reported, not independently verified.
-Account credit balance and configured safeguards are unverified. Before
-publishing, inspect available credits, usage alerts, and service-shutdown limit
-with the owner; no subscription upgrades, paid services, extra spending, or
-unnecessary deployments without approval. Free API and tile services have
-limits; failure must not trigger automatic paid upgrades. No artificial limits
-on users' trip, stop, or stay counts.
+**Costs:** Core entitlement is user-reported; credits/safeguards remain unverified.
+Check credits, usage alerts, and shutdown limits before publishing. No paid
+services, upgrades, additional spending, or automatic paid quota fallback without
+approval; no artificial trip/stop/stay limits.
 
-**Cuts:** Omit optional geocoding and elaborate visual effects if necessary;
-retain all seven mandatory and three custom features. No AI planning, GPS
-tracking, galleries, sharing, public profiles, booking, expenses, native apps, or
-paid maps without approval. The owner supplies at least five genuine trips,
-handles third-party usability testing, reflections, and final submission.
-
-References checked during planning:
-[Replit spending controls](https://docs.replit.com/billing/managing-spend),
-[Clerk](https://docs.replit.com/features/auth-and-identity/clerk-auth),
-[SQL database](https://docs.replit.com/features/data-and-storage/sql-database),
-[publishing](https://docs.replit.com/features/publishing/overview),
-[ORS endpoint migration](https://ask.openrouteservice.org/t/deprecating-api-openrouteservice-org-in-favour-of-api-heigit-org/7912),
-[ORS restrictions](https://openrouteservice.org/restrictions/),
-[OSM tile policy](https://operations.osmfoundation.org/policies/tiles/).
+**Cuts:** simplify optional geocoding/animation, never the seven mandatory or
+three custom features. No AI planning, GPS tracking/reconstruction, galleries,
+sharing, public profiles, booking, expenses, native apps, or paid maps without
+approval. The owner supplies genuine trip data and handles usability testing,
+academic reflections, and submission separately.
