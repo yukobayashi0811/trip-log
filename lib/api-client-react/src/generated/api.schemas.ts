@@ -5,6 +5,45 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface TripInput {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  startDate: string;
+  endDate: string;
+  /**
+     * @maxLength 200
+     * @nullable
+     */
+  destinationRegion?: string | null;
+  /**
+     * @maxLength 100
+     * @nullable
+     */
+  tripType?: string | null;
+  /**
+     * @maxLength 20000
+     * @nullable
+     */
+  notes?: string | null;
+}
+
+export interface Trip {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  /** @nullable */
+  destinationRegion: string | null;
+  /** @nullable */
+  tripType: string | null;
+  /** @nullable */
+  notes: string | null;
+  createdAt: string;
+}
+
 export interface CurrentUser {
   id: string;
   email: string;

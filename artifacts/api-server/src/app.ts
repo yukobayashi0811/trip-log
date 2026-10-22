@@ -47,6 +47,16 @@ app.use(
 app.use("/api", router);
 
 const errorHandler: ErrorRequestHandler = (_err, req, res, _next) => {
+  // Body-parser rejects malformed/oversized payloads before the private router.
+  // Return a client error rather than disguising bad input as a server crash.
+  if (_err?.type === "entity.parse.failed") {
+    res.status(400).json({ error: "Send a valid JSON body." });
+    return;
+  }
+  if (_err?.type === "entity.too.large") {
+    res.status(413).json({ error: "The request is too large." });
+    return;
+  }
   req.log.warn("Request could not be completed");
   res.status(500).json({ error: "Something went wrong. Please try again." });
 };

@@ -4,12 +4,18 @@ import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { Switch, Route, Redirect, Link, useLocation, Router as WouterRouter } from 'wouter';
-import { ArrowRight, LogOut, RotateCw, ShieldCheck, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import { ArrowRight, RotateCw, ShieldCheck, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useGetCurrentUser, getGetCurrentUserQueryKey } from '@workspace/api-client-react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import { AppShell } from '@/components/app-shell';
+import { RequireAuth } from '@/components/require-auth';
+import TripsListPage from '@/pages/trips-list';
+import TripNewPage from '@/pages/trip-new';
+import TripDetailPage from '@/pages/trip-detail';
+import TripEditPage from '@/pages/trip-edit';
 
 const queryClient = new QueryClient();
 
@@ -185,33 +191,6 @@ function SignUpPage() {
   );
 }
 
-function LogoutButton() {
-  const { signOut } = useClerk();
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handle = async () => {
-    setPending(true);
-    setError(null);
-    try {
-      await signOut({ redirectUrl: basePath || '/' });
-    } catch {
-      setError("We couldn't log you out. Check your connection and try again.");
-      setPending(false);
-    }
-  };
-
-  return (
-    <div className="flex flex-col items-end gap-2">
-      <button type="button" onClick={handle} disabled={pending} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-card disabled:opacity-60" data-testid="button-logout">
-        {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
-        {pending ? 'Logging out…' : 'Log out'}
-      </button>
-      {error && <p role="alert" className="text-sm text-destructive" data-testid="text-logout-error">{error}</p>}
-    </div>
-  );
-}
-
 function ClerkQueryClientCacheInvalidator() {
   const { addListener } = useClerk();
   const queryClient = useQueryClient();
@@ -296,39 +275,34 @@ function AccountPage() {
   usePageMeta('Your account — Trip Log', 'Your private Trip Log account.');
   const { user } = useUser();
   return (
-    <div className="paper-grain min-h-[100dvh]">
-      <header className="relative z-10 mx-auto flex max-w-3xl items-center justify-between px-5 py-5 md:px-8">
-        <Brand />
-      </header>
-      <main className="relative z-10 mx-auto max-w-3xl px-5 pb-16 pt-6 md:px-8 md:pt-14">
-        <h1 className="font-display text-4xl md:text-5xl">Your account</h1>
-        <p className="mt-2 text-muted-foreground">Trips and maps arrive soon. For now, your journal has a home.</p>
-        <section className="mt-8 rounded-2xl border border-card-border bg-card p-6 md:p-8">
-          {user ? <AccountCard key={user.id} clerkUserId={user.id} /> : <div className="h-24 animate-pulse rounded-xl bg-muted" />}
-        </section>
-        <div className="mt-6 flex justify-end"><LogoutButton /></div>
-      </main>
-    </div>
+    <AppShell width="max-w-3xl">
+      <h1 className="font-display text-4xl md:text-5xl">Your account</h1>
+      <p className="mt-2 text-muted-foreground">The private account behind your journal.</p>
+      <section className="mt-8 rounded-2xl border border-card-border bg-card p-6 md:p-8">
+        {user ? <AccountCard key={user.id} clerkUserId={user.id} /> : <div className="h-24 animate-pulse rounded-xl bg-muted" />}
+      </section>
+      <Link href="/trips" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline" data-testid="link-account-trips">Open your trips <ArrowRight className="h-4 w-4" /></Link>
+    </AppShell>
   );
 }
 
 function HomeRedirect() {
   return (
     <>
-      <Show when="signed-in"><Redirect to="/account" /></Show>
+      <Show when="signed-in" fallback={null}><Redirect to="/trips" /></Show>
       <Show when="signed-out"><Landing /></Show>
     </>
   );
 }
 
 function AccountRoute() {
-  return (
-    <>
-      <Show when="signed-in"><AccountPage /></Show>
-      <Show when="signed-out"><Redirect to="/" /></Show>
-    </>
-  );
+  return <RequireAuth>{() => <AccountPage />}</RequireAuth>;
 }
+
+const TripsRoute = () => <RequireAuth>{(uid) => <TripsListPage userId={uid} />}</RequireAuth>;
+const TripNewRoute = () => <RequireAuth>{(uid) => <TripNewPage userId={uid} />}</RequireAuth>;
+const TripDetailRoute = () => <RequireAuth>{(uid) => <TripDetailPage userId={uid} />}</RequireAuth>;
+const TripEditRoute = () => <RequireAuth>{(uid) => <TripEditPage userId={uid} />}</RequireAuth>;
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
@@ -361,6 +335,10 @@ function ClerkProviderWithRoutes() {
               <Route path="/sign-in/*?" component={SignInPage} />
               <Route path="/sign-up/*?" component={SignUpPage} />
               <Route path="/account" component={AccountRoute} />
+              <Route path="/trips" component={TripsRoute} />
+              <Route path="/trips/new" component={TripNewRoute} />
+              <Route path="/trips/:id/edit" component={TripEditRoute} />
+              <Route path="/trips/:id" component={TripDetailRoute} />
               <Route component={NotFound} />
             </Switch>
           </RoutedErrorBoundary>
