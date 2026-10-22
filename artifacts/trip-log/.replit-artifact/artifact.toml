@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Trip Log"
+description = "A private personal travel journal. Feature 1 provides in-app account registration, login, logout, and a secure account foundation."
+version = "1.0.0"
+id = "artifacts/trip-log"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21377
+
+[services.development]
+run = "pnpm --filter @workspace/trip-log run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/trip-log", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/trip-log/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21377"
+BASE_PATH = "/"
