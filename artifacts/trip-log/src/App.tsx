@@ -17,6 +17,7 @@ import TripNewPage from '@/pages/trip-new';
 import TripDetailPage from '@/pages/trip-detail';
 import TripEditPage from '@/pages/trip-edit';
 import StarredTripsPage from '@/pages/starred-trips';
+import DashboardPage from '@/pages/dashboard';
 import { AuthLoading } from '@/components/require-auth';
 
 const TripMapPage = lazy(() => import('@/pages/trip-map'));
@@ -304,6 +305,7 @@ function AccountRoute() {
 }
 
 const TripsRoute = () => <RequireAuth>{(uid) => <TripsListPage userId={uid} />}</RequireAuth>;
+const DashboardRoute = () => <RequireAuth>{(uid) => <DashboardPage userId={uid} />}</RequireAuth>;
 const StarredTripsRoute = () => <RequireAuth>{(uid) => <StarredTripsPage userId={uid} />}</RequireAuth>;
 const TripNewRoute = () => <RequireAuth>{(uid) => <TripNewPage userId={uid} />}</RequireAuth>;
 const TripDetailRoute = () => <RequireAuth>{(uid) => <TripDetailPage userId={uid} />}</RequireAuth>;
@@ -343,6 +345,7 @@ function ClerkProviderWithRoutes() {
               <Route path="/account" component={AccountRoute} />
               <Route path="/trips" component={TripsRoute} />
               <Route path="/starred" component={StarredTripsRoute} />
+              <Route path="/dashboard" component={DashboardRoute} />
               <Route path="/trips/new" component={TripNewRoute} />
               <Route path="/map" component={TripMapRoute} />
               <Route path="/trips/:id/map" component={TripMapRoute} />

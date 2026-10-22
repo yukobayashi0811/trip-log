@@ -56,7 +56,11 @@ combine in the browser using the existing owner-scoped trip and star APIs, with
 deterministic date ties and separate no-trips/no-matches states. It adds no
 endpoint, schema change, or dependency. See
 [search, filter, and sort verification](docs/search-verification.md).
-Feature 10 dashboard remains unimplemented.
+Feature 10 adds a private, responsive `/dashboard` with trip and stop counts,
+calendar-date accommodation nights, and chronological trip-start month totals.
+One authenticated snapshot query aggregates each metric separately, avoiding
+join multiplication and excluding other owners. No schema or infrastructure
+change is needed. See [Dashboard verification and Test B](docs/dashboard-verification.md).
 
 ## Stack and setup
 

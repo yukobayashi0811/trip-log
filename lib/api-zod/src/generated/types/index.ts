@@ -7,6 +7,8 @@
  */
 
 export * from './currentUser';
+export * from './dashboard';
+export * from './dashboardTripsByMonthItem';
 export * from './drivingRoute';
 export * from './drivingRouteStatus';
 export * from './healthStatus';
