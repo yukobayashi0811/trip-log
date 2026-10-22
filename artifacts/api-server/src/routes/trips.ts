@@ -1,11 +1,19 @@
 import { Router } from "express";
 import { and, desc, eq } from "drizzle-orm";
 import { db, trips } from "@workspace/db";
-import { tripIdSchema, tripInputSchema } from "@workspace/api-zod";
+import { tripIdSchema, tripInputSchema, tripValidationError } from "@workspace/api-zod";
 import { requireUser } from "../middlewares/require-user";
 
 const router = Router();
 router.use("/trips", requireUser);
+router.use("/trips", (req, res, next) => {
+  const mediaType = req.get("Content-Type")?.split(";")[0]?.trim().toLowerCase();
+  if ((req.method === "POST" || req.method === "PUT") && mediaType !== "application/json") {
+    res.status(415).json({ error: "Send trip details as application/json. Use the trip form and try again." });
+    return;
+  }
+  next();
+});
 
 const fields = {
   id: trips.id, title: trips.title, startDate: trips.startDate,
@@ -28,7 +36,7 @@ router.get("/trips", async (_req, res) => {
 router.post("/trips", async (req, res) => {
   const input = tripInputSchema.safeParse(req.body);
   if (!input.success) {
-    res.status(400).json({ error: "Check your trip details.", fields: input.error.flatten().fieldErrors });
+    res.status(400).json(tripValidationError(input.error));
     return;
   }
   const [trip] = await db.insert(trips).values({
@@ -51,7 +59,7 @@ router.put("/trips/:id", async (req, res) => {
   if (!id.success) { res.status(400).json({ error: "Invalid trip ID." }); return; }
   const input = tripInputSchema.safeParse(req.body);
   if (!input.success) {
-    res.status(400).json({ error: "Check your trip details.", fields: input.error.flatten().fieldErrors });
+    res.status(400).json(tripValidationError(input.error));
     return;
   }
   const [trip] = await db.update(trips).set(input.data)

@@ -1,7 +1,8 @@
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { Link } from 'wouter';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { validateTrip, type FieldErrors, type TripFormValues } from '@/lib/trips';
+import { TRIP_LABELS, TRIP_LIMITS } from '@workspace/api-zod';
 
 type Props = {
   initial: TripFormValues;
@@ -12,6 +13,7 @@ type Props = {
   serverFields: FieldErrors;
   cancelHref: string;
   onSubmit: (values: TripFormValues) => void;
+  onEdit: () => void;
 };
 
 const inputCls = 'w-full rounded-xl border border-input bg-[hsl(40_40%_99%)] px-3.5 py-2.5 text-[15px] outline-none transition-shadow placeholder:text-muted-foreground/70 focus:border-ring focus:ring-[3px] focus:ring-ring/15 aria-[invalid=true]:border-destructive disabled:opacity-70';
@@ -29,21 +31,34 @@ function Field({ id, label, hint, error, children, required }: { id: string; lab
   );
 }
 
-export function TripForm({ initial, submitLabel, pendingLabel, pending, serverError, serverFields, cancelHref, onSubmit }: Props) {
+export function TripForm({ initial, submitLabel, pendingLabel, pending, serverError, serverFields, cancelHref, onSubmit, onEdit }: Props) {
   const [values, setValues] = useState<TripFormValues>(initial);
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const shown: FieldErrors = { ...serverFields, ...errors };
+  const [touched, setTouched] = useState<Partial<Record<keyof TripFormValues, boolean>>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const errors = validateTrip(values);
+  const shown: FieldErrors = { ...serverFields };
+  for (const key of Object.keys(TRIP_LABELS) as (keyof TripFormValues)[]) {
+    if ((submitted || touched[key]) && errors[key]) shown[key] = errors[key];
+  }
+  const visibleErrors = Object.entries(shown).filter((entry) => !!entry[1]) as [keyof TripFormValues, string][];
+
+  useEffect(() => {
+    if (serverError) {
+      const first = Object.keys(serverFields)[0];
+      document.getElementById(first ? `trip-${first}` : 'trip-server-error')?.focus();
+    }
+  }, [serverError, serverFields]);
 
   const set = (k: keyof TripFormValues) => (e: { target: { value: string } }) => {
+    onEdit();
     setValues((v) => ({ ...v, [k]: e.target.value }));
-    if (errors[k]) setErrors((er) => ({ ...er, [k]: undefined }));
   };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (pending) return;
     const v = validateTrip(values);
-    setErrors(v);
+    setSubmitted(true);
     if (Object.values(v).some(Boolean)) {
       const first = Object.keys(v).find((k) => v[k as keyof TripFormValues]);
       if (first) document.getElementById(`trip-${first}`)?.focus();
@@ -55,42 +70,54 @@ export function TripForm({ initial, submitLabel, pendingLabel, pending, serverEr
   const a11y = (k: keyof TripFormValues) => ({
     id: `trip-${k}`,
     'aria-invalid': shown[k] ? true : undefined,
-    'aria-describedby': shown[k] ? `trip-${k}-error` : undefined,
+    'aria-describedby': shown[k] ? `trip-${k}-error`
+      : ['destinationRegion', 'tripType', 'notes'].includes(k) ? `trip-${k}-hint` : undefined,
+    onBlur: () => setTouched((v) => ({ ...v, [k]: true })),
     disabled: pending,
   });
 
   return (
-    <form onSubmit={submit} noValidate={false} className="space-y-6" aria-busy={pending} data-testid="form-trip">
+    <form onSubmit={submit} noValidate className="space-y-6" aria-busy={pending} data-testid="form-trip">
       {serverError && (
-        <div role="alert" className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm" data-testid="text-form-error">
+        <div id="trip-server-error" tabIndex={-1} role="alert" className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm" data-testid="text-form-error">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
           <p>{serverError}</p>
         </div>
       )}
+      {visibleErrors.length > 0 && (
+        <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm" data-testid="validation-summary">
+          <p className="font-medium">Check {visibleErrors.length === 1 ? 'this field' : 'these fields'} before saving:</p>
+          <ul className="mt-2 space-y-1">
+            {visibleErrors.map(([field, message]) => (
+              <li key={field}><button type="button" className="text-left text-destructive underline underline-offset-2" onClick={() => document.getElementById(`trip-${field}`)?.focus()}>{TRIP_LABELS[field]}: {message}</button></li>
+            ))}
+          </ul>
+        </div>
+      )}
       <Field id="trip-title" label="Title" required error={shown.title}>
-        <input {...a11y('title')} required maxLength={200} value={values.title} onChange={set('title')} placeholder="Blue Ridge in October" className={`${inputCls} font-display text-lg`} data-testid="input-title" />
+        <input {...a11y('title')} required maxLength={TRIP_LIMITS.title} value={values.title} onChange={set('title')} placeholder="Blue Ridge in October" className={`${inputCls} font-display text-lg`} data-testid="input-title" />
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="trip-startDate" label="Start date" required error={shown.startDate}>
-          <input {...a11y('startDate')} type="date" required value={values.startDate} onChange={set('startDate')} className={inputCls} data-testid="input-start-date" />
+          <input {...a11y('startDate')} type="date" min="0001-01-01" max="9999-12-31" required value={values.startDate} onChange={set('startDate')} className={inputCls} data-testid="input-start-date" />
         </Field>
         <Field id="trip-endDate" label="End date" required error={shown.endDate}>
-          <input {...a11y('endDate')} type="date" required min={values.startDate || undefined} value={values.endDate} onChange={set('endDate')} className={inputCls} data-testid="input-end-date" />
+          <input {...a11y('endDate')} type="date" required min={values.startDate || '0001-01-01'} max="9999-12-31" value={values.endDate} onChange={set('endDate')} className={inputCls} data-testid="input-end-date" />
         </Field>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="trip-destinationRegion" label="Region" hint="A state, park, coastline, or country." error={shown.destinationRegion}>
-          <input {...a11y('destinationRegion')} maxLength={200} value={values.destinationRegion} onChange={set('destinationRegion')} placeholder="Western North Carolina" className={inputCls} data-testid="input-region" />
+          <input {...a11y('destinationRegion')} maxLength={TRIP_LIMITS.destinationRegion} value={values.destinationRegion} onChange={set('destinationRegion')} placeholder="Western North Carolina" className={inputCls} data-testid="input-region" />
         </Field>
         <Field id="trip-tripType" label="Trip type" hint="Road trip, camping, family visit…" error={shown.tripType}>
-          <input {...a11y('tripType')} maxLength={100} value={values.tripType} onChange={set('tripType')} placeholder="Road trip" className={inputCls} data-testid="input-trip-type" />
+          <input {...a11y('tripType')} maxLength={TRIP_LIMITS.tripType} value={values.tripType} onChange={set('tripType')} placeholder="Road trip" className={inputCls} data-testid="input-trip-type" />
         </Field>
       </div>
-      <Field id="trip-notes" label="Notes" hint="Line breaks are kept exactly as you write them." error={shown.notes}>
-        <textarea {...a11y('notes')} maxLength={20000} rows={8} value={values.notes} onChange={set('notes')} placeholder="What you want to remember." className={`${inputCls} min-h-[180px] resize-y leading-relaxed`} data-testid="input-notes" />
+      <Field id="trip-notes" label="Notes" hint={`${values.notes.length.toLocaleString()} / ${TRIP_LIMITS.notes.toLocaleString()} characters. Nonblank notes keep your spacing and line breaks.`} error={shown.notes}>
+        <textarea {...a11y('notes')} maxLength={TRIP_LIMITS.notes} rows={8} value={values.notes} onChange={set('notes')} placeholder="What you want to remember." className={`${inputCls} min-h-[180px] resize-y leading-relaxed`} data-testid="input-notes" />
       </Field>
       <div className="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
-        <Link href={cancelHref} className="inline-flex justify-center rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-card" data-testid="link-cancel">Cancel</Link>
+        <Link href={cancelHref} aria-disabled={pending} onClick={(e) => { if (pending) e.preventDefault(); }} className="inline-flex justify-center rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-card aria-disabled:opacity-60" data-testid="link-cancel">Cancel</Link>
         <button type="submit" disabled={pending} className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-transform hover:bg-primary/90 active:scale-[0.98] disabled:opacity-70" data-testid="button-submit">
           {pending && <Loader2 className="h-4 w-4 animate-spin" />}
           {pending ? pendingLabel : submitLabel}

@@ -27,6 +27,7 @@ import type {
 import type {
   CurrentUser,
   HealthStatus,
+  InvalidTripRequestResponse,
   Trip,
   TripInput
 } from './api.schemas';
@@ -201,7 +202,7 @@ return customFetch<Trip>(getCreateTripUrl(),
 
 export const getCreateTripMutationKey = () => ['createTrip'] as const;
 
-export const getCreateTripMutationOptions = <TError = ErrorType<void>,
+export const getCreateTripMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTrip>>, TError,CreateTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof createTrip>>, TError,CreateTripMutationVariables, TContext> => {
 
@@ -230,13 +231,13 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CreateTripMutationResult = NonNullable<Awaited<ReturnType<typeof createTrip>>>
     export type CreateTripMutationBody = BodyType<TripInput>
-    export type CreateTripMutationError = ErrorType<void>
+    export type CreateTripMutationError = ErrorType<InvalidTripRequestResponse | void>
     export type CreateTripMutationVariables = {data: BodyType<TripInput>}
 
     /**
  * @summary Create a trip for the current user
  */
-export const useCreateTrip = <TError = ErrorType<void>,
+export const useCreateTrip = <TError = ErrorType<InvalidTripRequestResponse | void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTrip>>, TError,CreateTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createTrip>>,
@@ -391,7 +392,7 @@ return customFetch<Trip>(getUpdateTripUrl(id),
 
 export const getUpdateTripMutationKey = () => ['updateTrip'] as const;
 
-export const getUpdateTripMutationOptions = <TError = ErrorType<void>,
+export const getUpdateTripMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTrip>>, TError,UpdateTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateTrip>>, TError,UpdateTripMutationVariables, TContext> => {
 
@@ -420,13 +421,13 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UpdateTripMutationResult = NonNullable<Awaited<ReturnType<typeof updateTrip>>>
     export type UpdateTripMutationBody = BodyType<TripInput>
-    export type UpdateTripMutationError = ErrorType<void>
+    export type UpdateTripMutationError = ErrorType<InvalidTripRequestResponse | void>
     export type UpdateTripMutationVariables = {id: string;data: BodyType<TripInput>}
 
     /**
  * @summary Replace editable fields of one owned trip
  */
-export const useUpdateTrip = <TError = ErrorType<void>,
+export const useUpdateTrip = <TError = ErrorType<InvalidTripRequestResponse | void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTrip>>, TError,UpdateTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateTrip>>,

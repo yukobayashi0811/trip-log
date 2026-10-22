@@ -8,5 +8,8 @@
 
 export * from './currentUser';
 export * from './healthStatus';
+export * from './invalidTripRequestResponse';
 export * from './trip';
 export * from './tripInput';
+export * from './tripRequestError';
+export * from './tripRequestErrorFields';

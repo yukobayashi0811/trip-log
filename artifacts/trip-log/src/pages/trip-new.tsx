@@ -35,6 +35,7 @@ export default function TripNewPage({ userId }: { userId: string }) {
               setLocation(`/trips/${trip.id}`);
             },
           })}
+          onEdit={() => create.reset()}
         />
       </div>
     </AppShell>

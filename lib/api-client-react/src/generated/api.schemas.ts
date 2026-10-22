@@ -5,6 +5,14 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type TripRequestErrorFields = {[key: string]: string[]};
+
+export interface TripRequestError {
+  error: string;
+  fields?: TripRequestErrorFields;
+  formErrors?: string[];
+}
+
 export interface TripInput {
   /**
      * @minLength 1
@@ -53,4 +61,9 @@ export interface CurrentUser {
 export interface HealthStatus {
   status: string;
 }
+
+/**
+ * Invalid input; known fields have actionable messages; root errors use formErrors
+ */
+export type InvalidTripRequestResponse = TripRequestError;
 
