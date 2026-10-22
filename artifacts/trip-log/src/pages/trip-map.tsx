@@ -45,11 +45,12 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
   usePageMeta(trip ? `${trip.title} map — Trip Log` : 'Map — Trip Log', 'Your trip itinerary on a map.');
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [stayDraftDirty, setStayDraftDirty] = useState(false);
   const [editor, setEditor] = useState<EditorState | null>(null);
   const [errors, setErrors] = useState<StopFieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [mapPicks, setMapPicks] = useState(true);
-  const [confirm, setConfirm] = useState<{ title: string; run: () => void } | null>(null);
+  const [confirm, setConfirm] = useState<{ title: string; description: string; run: () => void } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Stop | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -73,26 +74,41 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
 
   // Drop selection if the stop disappears (deleted elsewhere).
   useEffect(() => {
-    if (selectedId && stopsQ.isSuccess && !stopsQ.isFetching && !stops.some((s) => s.id === selectedId)) setSelectedId(null);
+    if (selectedId && stopsQ.isSuccess && !stopsQ.isFetching && !stops.some((s) => s.id === selectedId)) {
+      setStayDraftDirty(false);
+      setSelectedId(null);
+    }
   }, [stops, stopsQ.isSuccess, stopsQ.isFetching, selectedId]);
 
   // Warn before a full-page unload with unsaved changes.
   useEffect(() => {
-    if (!dirty) return;
+    if (!dirty && !stayDraftDirty) return;
     const h = (e: BeforeUnloadEvent) => { e.preventDefault(); };
     window.addEventListener('beforeunload', h);
     return () => window.removeEventListener('beforeunload', h);
-  }, [dirty]);
+  }, [dirty, stayDraftDirty]);
 
   const guard = useCallback((run: () => void, title = 'Discard your unsaved stop changes?') => {
     if (busy) return;
-    if (dirty) setConfirm({ title, run });
+    if (dirty || stayDraftDirty) {
+      const discardStayAndRun = () => {
+        setStayDraftDirty(false);
+        run();
+      };
+      setConfirm({
+        title: dirty ? title : 'Discard your unsaved accommodation changes?',
+        description: dirty
+          ? 'The stop editor has unsaved changes. Continuing will discard them.'
+          : 'The accommodation form has unsaved changes. Continuing will discard them.',
+        run: discardStayAndRun,
+      });
+    }
     else run();
-  }, [dirty, busy]);
+  }, [dirty, stayDraftDirty, busy]);
 
   // Header/journal links also leave this workspace; don't silently drop a draft.
   useEffect(() => {
-    if (!dirty && !busy) return;
+    if (!dirty && !stayDraftDirty && !busy) return;
     const intercept = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const anchor = event.target instanceof Element ? event.target.closest('a[href]') as HTMLAnchorElement | null : null;
@@ -103,11 +119,20 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
       if (busy) { setNotice('Wait for the current stop change to finish before leaving.'); return; }
       const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       const path = base && url.pathname.startsWith(base) ? url.pathname.slice(base.length) : url.pathname;
-      setConfirm({ title: 'Leave without saving this stop?', run: () => setLocation((path || '/') + url.search + url.hash) });
+       setConfirm({
+         title: dirty ? 'Leave without saving this stop?' : 'Leave without saving this accommodation?',
+         description: dirty
+           ? 'The stop editor has unsaved changes. Leaving will discard them.'
+           : 'The accommodation form has unsaved changes. Leaving will discard them.',
+         run: () => {
+           setStayDraftDirty(false);
+           setLocation((path || '/') + url.search + url.hash);
+         },
+       });
     };
     document.addEventListener('click', intercept, true);
     return () => document.removeEventListener('click', intercept, true);
-  }, [dirty, busy, setLocation]);
+  }, [dirty, stayDraftDirty, busy, setLocation]);
 
   const invalidateStops = (stopId?: string) => {
     qc.invalidateQueries({ queryKey: getListStopsQueryKey(tripId) });
@@ -133,7 +158,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
     if (busy) return;
     if (editor && editor.stopId === sid) { setSelectedId(sid); return; }
     if (editor) guard(() => { closeEditor(); setSelectedId(sid); }, 'Leave this stop without saving?');
-    else setSelectedId(sid);
+    else if (sid !== selectedId) guard(() => setSelectedId(sid), 'Switch stops without saving?');
   };
 
   const onMapClick = (lat: number, lng: number) => {
@@ -144,7 +169,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
       setErrors((er) => ({ ...er, latitude: undefined, longitude: undefined }));
       return;
     }
-    openNew([lat, lng]);
+    guard(() => openNew([lat, lng]), 'Discard unsaved accommodation changes and add a stop?');
   };
 
   const onField = (f: StopField, v: string) => {
@@ -203,7 +228,10 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
         qc.removeQueries({ queryKey: getGetStopQueryKey(tripId, sid) });
         invalidateStops();
         if (editor?.stopId === sid) closeEditor();
-        if (selectedId === sid) setSelectedId(null);
+        if (selectedId === sid) {
+          setStayDraftDirty(false);
+          setSelectedId(null);
+        }
         setDeleteTarget(null);
       },
       onError: (err) => {
@@ -343,9 +371,9 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
               <span className="font-mono">{fmtCoord(selectedDetail.latitude)}, {fmtCoord(selectedDetail.longitude)}</span>
             </p>
             {selectedDetail.notes ? <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-relaxed" data-testid="text-selected-stop-notes">{selectedDetail.notes}</p> : <p className="mt-3 text-sm italic text-muted-foreground">No notes for this stop.</p>}
-            <StayPanel stop={selectedDetail} />
+            <StayPanel key={selectedDetail.id} stop={selectedDetail} onDirtyChange={setStayDraftDirty} />
             {stopQ.isError && errorStatus(stopQ.error) !== 404 && <p className="mt-2 text-xs text-muted-foreground">Latest details couldn't refresh; showing the itinerary copy.</p>}
-            <button type="button" onClick={() => openEdit(selectedDetail)} disabled={busy} className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-sm font-medium hover:bg-muted disabled:opacity-50" data-testid="button-edit-selected-stop"><Pencil className="h-3.5 w-3.5" /> Edit stop</button>
+            <button type="button" onClick={() => guard(() => openEdit(selectedDetail))} disabled={busy} className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-sm font-medium hover:bg-muted disabled:opacity-50" data-testid="button-edit-selected-stop"><Pencil className="h-3.5 w-3.5" /> Edit stop</button>
           </section>
         )}
       </div>
@@ -392,7 +420,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
 
         <aside className={`min-w-0 ${panelOpen ? '' : 'lg:hidden'}`} aria-label="Itinerary">
           <div className="flex items-center justify-between gap-2 rounded-2xl border border-card-border bg-card/70 px-3 py-2 lg:border-0 lg:bg-transparent lg:px-0">
-            <button type="button" onClick={() => setPanelOpen((o) => !o)} aria-expanded={panelOpen} aria-controls="itinerary-body" className="inline-flex items-center gap-2 text-sm font-semibold" data-testid="button-toggle-itinerary">
+            <button type="button" onClick={() => panelOpen ? guard(() => setPanelOpen(false)) : setPanelOpen(true)} aria-expanded={panelOpen} aria-controls="itinerary-body" className="inline-flex items-center gap-2 text-sm font-semibold" data-testid="button-toggle-itinerary">
               <span className="lg:hidden">{panelOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</span>
               <span className="hidden lg:inline"><PanelRightClose className="h-4 w-4" /></span>
               Itinerary{validTrip && stopsQ.isSuccess ? ` · ${stops.length} ${stops.length === 1 ? 'stop' : 'stops'}` : ''}
@@ -410,11 +438,11 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display">{confirm?.title}</AlertDialogTitle>
-            <AlertDialogDescription>The stop editor has changes that haven't been saved. Continuing will throw them away.</AlertDialogDescription>
+            <AlertDialogDescription>{confirm?.description}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel data-testid="button-keep-editing">Keep editing</AlertDialogCancel>
-            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { const r = confirm?.run; setConfirm(null); closeEditor(); r?.(); }} data-testid="button-confirm-discard">Discard changes</AlertDialogAction>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { const r = confirm?.run; setConfirm(null); if (dirty) closeEditor(); r?.(); }} data-testid="button-confirm-discard">Discard changes</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

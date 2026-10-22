@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { BedDouble, Loader2, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import {
@@ -9,11 +9,14 @@ import { STAY_TYPES, type StayField } from "@workspace/api-zod";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { formatDate } from "@/lib/trips";
 import {
-  buildStayInput, emptyStayValues, stayApiError, stayToValues,
+  buildStayInput, emptyStayValues, hasUnsavedStayChanges, stayApiError, stayToValues,
   type StayFormFieldErrors, type StayFormValues,
 } from "@/lib/stays";
 
-export function StayPanel({ stop }: { stop: Stop }) {
+export function StayPanel({ stop, onDirtyChange }: {
+  stop: Stop;
+  onDirtyChange: (dirty: boolean) => void;
+}) {
   const qc = useQueryClient();
   const create = useCreateStay();
   const update = useUpdateStay();
@@ -24,6 +27,7 @@ export function StayPanel({ stop }: { stop: Stop }) {
   const [formError, setFormError] = useState<string | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const initialValues = useRef<StayFormValues>({ ...emptyStayValues });
   const saving = create.isPending || update.isPending;
 
   const refreshStop = () => {
@@ -32,14 +36,19 @@ export function StayPanel({ stop }: { stop: Stop }) {
   };
 
   const beginEdit = () => {
-    setValues(stop.stay ? stayToValues(stop.stay) : { ...emptyStayValues });
+    const next = stop.stay ? stayToValues(stop.stay) : { ...emptyStayValues };
+    initialValues.current = next;
+    setValues(next);
     setFields({});
     setFormError(null);
+    onDirtyChange(false);
     setEditing(true);
   };
 
   const change = (field: keyof StayFormValues, value: string) => {
-    setValues((current) => ({ ...current, [field]: value }));
+    const next = { ...values, [field]: value };
+    setValues(next);
+    onDirtyChange(hasUnsavedStayChanges(next, initialValues.current));
     setFields((current) => ({ ...current, [field as StayField]: undefined }));
     setFormError(null);
   };
@@ -62,6 +71,7 @@ export function StayPanel({ stop }: { stop: Stop }) {
     const options = {
       onSuccess: () => {
         refreshStop();
+        onDirtyChange(false);
         setEditing(false);
       },
       onError: (error: unknown) => {
@@ -185,7 +195,7 @@ export function StayPanel({ stop }: { stop: Stop }) {
               data-testid={`button-save-stay-${stop.id}`}>
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{saving ? "Saving…" : stop.stay ? "Save changes" : "Save accommodation"}
             </button>
-            <button type="button" onClick={() => { setEditing(false); setFields({}); setFormError(null); }}
+            <button type="button" onClick={() => { onDirtyChange(false); setEditing(false); setFields({}); setFormError(null); }}
               disabled={saving || remove.isPending} className="rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
               data-testid={`button-cancel-stay-${stop.id}`}>Cancel</button>
           </div>

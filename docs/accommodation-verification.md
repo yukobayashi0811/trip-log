@@ -66,8 +66,59 @@ the authenticated user's parent trip and the stop-to-trip relationship.
 ## Browser verification limitation
 
 The authenticated add/edit/delete/reload flow was not exercised in a real
-browser during this session: the available browser preview has no signed-in
-Clerk session, and no user credentials were supplied or used. The production
-app was not republished with this unmerged work. The authenticated desktop and
-mobile UI flow still requires manual verification before treating the feature
-as production-verified.
+browser during the original Feature 7 implementation. The production app was
+not republished with this unmerged work. The authenticated desktop and mobile
+UI flow still requires verification before treating the feature as
+production-verified.
+
+## Follow-up verification after PR #16 review
+
+### State and date fixes
+
+- The accommodation panel is now keyed by selected stop ID, so its React-local
+  form state is recreated when selection changes.
+- The parent tracks whether accommodation values differ from that stop's
+  starting values. Switching stops, opening another stop editor, closing the
+  itinerary panel, leaving the map, or opening a new stop asks for confirmation
+  before discarding a dirty stay draft. Canceling keeps Stop A selected with its
+  values intact; confirming clears the draft before navigation. Full-page
+  navigation also uses the existing unsaved-change warning.
+- Draft-state regression tests cover clean, edited, reverted, and different-stop
+  baselines. They exercise the shared comparison/initial-value helpers; they are
+  not a substitute for the authenticated UI switch flow.
+- Calendar validation now rejects year `0000`. An API integration test verifies
+  a `400` field-validation response and confirms no stay row is saved.
+- A routing integration test uses a mocked provider, creates a stay, captures a
+  ready road-route response, deletes only the stay, then verifies the stop and
+  route response are unchanged. No external routing service is called.
+
+### Latest checks
+
+- `pnpm --filter @workspace/api-server test` — **240 tests passed** in 11 files.
+- `pnpm run typecheck` — passed across shared libraries, API, web app, scripts,
+  and sandbox.
+- `PORT=21377 BASE_PATH=/ pnpm run build` — passed for the Trip Log frontend,
+  API server, and sandbox. Vite still reports the existing tooltip source-map
+  warning and bundle-size advisory.
+- After restarting the development workflows, local `/api/healthz` returned
+  `200`; unauthenticated `/api/trips` returned the expected `401`.
+- No production data, authentication settings, Autoscale settings, or published
+  deployment were changed.
+
+### Authenticated browser verification remains outstanding
+
+I could not run the requested signed-in desktop/mobile CRUD flow in this
+session. The Preview screenshot capture is non-interactive and starts
+unauthenticated. Although this project uses managed Clerk with a separate
+development instance, no authorized isolated test identity or executable
+programmatic sign-in helper was available in the workspace. No password, token,
+cookie, or secret was inspected, and production authentication was not bypassed.
+No authenticated CRUD screenshots were captured; the API tests and screenshots
+from Test A are not being presented as browser CRUD evidence.
+
+The following manual browser checks remain before merging: create a stay, reload,
+edit it, reload, delete it, and verify the stop and displayed road route remain;
+then enter unsaved values for Stop A, switch to Stop B, cancel the discard
+confirmation and verify A's values remain, then confirm discard and verify B
+shows only its own stay or a blank form. Repeat the authenticated CRUD and stop
+switch checks at desktop and mobile widths.

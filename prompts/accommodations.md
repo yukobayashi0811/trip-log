@@ -172,9 +172,36 @@ Do not enable paid services, change the hosting allocation, or incur additional 
 ## Verification outcome
 
 - The post-Feature-6 production prerequisite passed before the feature branch work began; details are in `docs/accommodation-verification.md`.
-- `pnpm --filter @workspace/api-server test`: 236 tests passed. `pnpm run typecheck` and OpenAPI code generation passed.
+- `pnpm --filter @workspace/api-server test`: 240 tests passed after follow-up fixes. `pnpm run typecheck` and OpenAPI code generation passed.
 - `PORT=21377 BASE_PATH=/ pnpm run build` passed for the frontend and API. Vite reported a source-map warning for `tooltip.tsx` and the existing bundle-size advisory.
 - A controlled removal of the stay parent-trip owner predicate produced a real red isolation test (`expected 200 to be 404`); restoring the predicate produced a green focused test. Raw output, UTC times, source hashes and screenshots are in `evidence/tests/`.
-- The authenticated desktop/mobile UI workflow has not been manually exercised in this session because the available browser has no signed-in Clerk session. This limitation is documented; no unmerged code was deployed.
+- The authenticated desktop/mobile UI workflow has not been exercised: the available Preview capture is signed-out and non-interactive, and no authorized isolated test identity helper is available in this workspace. No credentials were inspected and no unmerged code was deployed.
 - No schema migration, `PLAN.md` edit, paid service, production write or Autoscale change was made.
 - Pull Request #16 is open for review: https://github.com/yukobayashi0811/trip-log/pull/16
+
+## Follow-up verification request (verbatim)
+
+```text
+Please complete the outstanding Feature 7 verification before I merge PR #16.
+
+I reviewed the code and identified a possible UI state issue: `StayPanel` retains local editing state when the selected stop changes. Ensure unsaved accommodation values cannot carry over from Stop A to Stop B or accidentally be saved to the wrong stop. Prefer appropriate unsaved-change protection, and add regression coverage.
+
+Also check that stay date validation rejects year `0000` cleanly rather than allowing a database error.
+
+Then perform genuine authenticated browser tests of accommodation creation, editing, deletion, and persistence after reload, on both desktop and mobile.
+
+Use the development Preview with an authorized, isolated test identity. Follow the established development-only browser testing approach where supported; do not bypass production authentication, inspect credentials, or modify production data. If authenticated testing is still unavailable, report that limitation explicitly rather than claiming success.
+
+Test switching stops while an accommodation form has unsaved changes, and verify that deleting an accommodation preserves its Stop and existing road routes.
+
+Rerun the complete API regression suite, TypeScript checks, and production builds after any fixes. Add the actual browser evidence and results to `docs/accommodation-verification.md` and the existing PR #16.
+
+Do not merge, publish, change PLAN.md or Autoscale settings, or start Feature 8. Stop for my review.
+```
+
+## Follow-up outcome
+
+- Prevented stay form state from crossing stop selections and added shared draft-state regression tests.
+- Added year-0000 validation and verified stay deletion leaves the stop and route result unchanged.
+- Full regression: 240 tests passed; TypeScript checks and production builds passed.
+- Authenticated desktop/mobile browser CRUD and switching tests remain unverified because no supported authorized development test identity/browser helper was available. See `docs/accommodation-verification.md`; no browser CRUD evidence is claimed.

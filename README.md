@@ -81,7 +81,7 @@ See [authentication verification](docs/auth-verification.md) for actual results
 and [database verification](docs/database-verification.md) for the database tests
 and the historical database checkpoint. See [Trip CRUD verification](docs/trip-crud-verification.md)
 and [actual ownership regression evidence](evidence/tests/README.md) for Feature 3.
-The full backend suite passes **236 tests** across authentication, schema,
+The full backend suite passes **240 tests** across authentication, schema,
 trip/stop/stay/routing API integration, provider safety and shared/HTTP validation. The Feature 3 CRUD browser
 journey passed on desktop/mobile; the focused Feature 4 validation browser
 journey passed on desktop.

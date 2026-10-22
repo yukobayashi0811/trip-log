@@ -9,3 +9,5 @@ export { stopInputSchema, stopOrderSchema, stopValidationError, STOP_LIMITS, STO
 export * from "./routing";
 export { isStayCalendarDate, stayInputSchema, stayResponseSchema, stayValidationError, stayFormErrors, STAY_TYPES, STAY_LABELS } from "./stay-input";
 export type { StayField, StayFieldErrors } from "./stay-input";
+export { emptyStayValues, hasUnsavedStayChanges, stayFormValuesFromStay } from "./stay-form-state";
+export type { StayFormSource, StayFormValues } from "./stay-form-state";

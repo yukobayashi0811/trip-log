@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import request from "supertest";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq, inArray } from "drizzle-orm";
-import { db, pool, stops, users } from "@workspace/db";
+import { db, pool, stays, stops, users } from "@workspace/db";
 
 const clerk = vi.hoisted(() => ({ userId: null as string | null, getUser: vi.fn() }));
 const provider = vi.hoisted(() => ({ key: "synthetic-key-not-a-real-secret" as string | undefined, fetch: vi.fn() }));
@@ -88,6 +88,35 @@ describe("owned saved-itinerary routing HTTP/PostgreSQL integration", () => {
     const result = await request(app).get(`${path()}?coordinates=0,0&userId=forged&transport=Flying`);
     expect(result.status).toBe(200);
     expect(result.body.segments[0].coordinates).toEqual([[8.6, 49.4], [8.6, 49.41]]);
+  });
+  it("deleting a stay preserves its stop and the existing road route", async () => {
+    const a = await add("A", 49.4);
+    const b = await add("B", 49.41);
+    const stay = await request(app).post(`/api/trips/${tripId}/stops/${b.id}/stay`).send({
+      accommodationType: "Hotel",
+      checkIn: "2026-05-01",
+      checkOut: "2026-05-02",
+    });
+    expect(stay.status).toBe(201);
+
+    const routeBefore = await request(app).get(path());
+    expect(routeBefore.status).toBe(200);
+    expect(routeBefore.body.segments[0]).toMatchObject({
+      status: "ready",
+      stopIds: [a.id, b.id],
+      coordinates: [[8.6, 49.4], [8.6, 49.41]],
+    });
+    const stopsBefore = await db.select().from(stops).where(eq(stops.tripId, tripId));
+
+    expect((await request(app).delete(`/api/trips/${tripId}/stops/${b.id}/stay`)).status).toBe(204);
+    const routeAfter = await request(app).get(path());
+    expect(routeAfter.body).toEqual(routeBefore.body);
+    expect(await db.select().from(stops).where(eq(stops.tripId, tripId))).toEqual(stopsBefore);
+    expect((await db.select().from(stays).where(eq(stays.stopId, b.id)))).toHaveLength(0);
+    const stopAfter = await request(app).get(`/api/trips/${tripId}/stops/${b.id}`);
+    expect(stopAfter.status).toBe(200);
+    expect(stopAfter.body).toMatchObject({ id: b.id, name: "B", stay: null });
+    expect(provider.fetch).toHaveBeenCalledTimes(1);
   });
   it("missing credentials leave saved markers/records intact with a clear status", async () => {
     provider.key = undefined;

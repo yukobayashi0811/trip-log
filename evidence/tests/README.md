@@ -46,3 +46,13 @@ The screenshots render the saved focused Vitest output and distinguish skipped
 tests from the one targeted isolation test. See
 [`docs/accommodation-verification.md`](../../docs/accommodation-verification.md)
 for full-suite results and the outstanding authenticated-browser limitation.
+
+## Feature 7 follow-up regression coverage
+
+The latest full API suite includes year-0000 rejection, draft-value comparison
+and different-stop baseline tests, plus an integration test proving that stay
+deletion leaves the stop and mocked-provider road-route response unchanged.
+The authenticated desktop/mobile Preview flow could not be run with the
+available non-interactive, signed-out browser; no CRUD screenshots are claimed.
+See [`docs/accommodation-verification.md`](../../docs/accommodation-verification.md)
+for the exact limitation and remaining manual checks.

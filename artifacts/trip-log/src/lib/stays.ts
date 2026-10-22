@@ -1,37 +1,18 @@
 import type { Stay, StayInput } from "@workspace/api-client-react";
 import {
-  stayInputSchema, stayValidationError, STAY_LABELS,
+  emptyStayValues, stayFormValuesFromStay, stayInputSchema, stayValidationError, STAY_LABELS,
   type StayField, type StayFieldErrors,
+  type StayFormValues,
 } from "@workspace/api-zod";
 import { errorStatus } from "@/lib/trips";
-
-export type StayFormValues = {
-  accommodationType: string;
-  checkIn: string;
-  checkOut: string;
-  rating: string;
-  notes: string;
-};
+export { emptyStayValues, hasUnsavedStayChanges } from "@workspace/api-zod";
+export type { StayFormValues } from "@workspace/api-zod";
 
 export type StayFormFieldErrors = Partial<Record<StayField, string>>;
 export type { StayField };
 
-export const emptyStayValues: StayFormValues = {
-  accommodationType: "",
-  checkIn: "",
-  checkOut: "",
-  rating: "",
-  notes: "",
-};
-
 export function stayToValues(stay: Stay): StayFormValues {
-  return {
-    accommodationType: stay.accommodationType,
-    checkIn: stay.checkIn,
-    checkOut: stay.checkOut,
-    rating: stay.rating === null ? "" : String(stay.rating),
-    notes: stay.notes ?? "",
-  };
+  return stayFormValuesFromStay(stay);
 }
 
 export function buildStayInput(values: StayFormValues):

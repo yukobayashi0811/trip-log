@@ -3,6 +3,7 @@ import request from "supertest";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { and, eq, inArray } from "drizzle-orm";
 import { db, pool, stays, stops, trips, users } from "@workspace/db";
+import { isStayCalendarDate } from "@workspace/api-zod";
 
 const clerk = vi.hoisted(() => ({ userId: null as string | null, getUser: vi.fn() }));
 vi.mock("@clerk/express", () => ({
@@ -158,6 +159,19 @@ describe("owned accommodation stays on real PostgreSQL", () => {
     });
     expect(leapDay.status).toBe(201);
     expect(leapDay.body).toMatchObject({ checkIn: "2024-02-29", checkOut: "2024-03-01", rating: 5 });
+  });
+
+  it("rejects year 0000 as a validation error before reaching PostgreSQL", async () => {
+    expect(isStayCalendarDate("0000-02-29")).toBe(false);
+    expect(isStayCalendarDate("0001-01-01")).toBe(true);
+
+    const response = await request(app).post(path()).send({
+      ...validStay,
+      checkIn: "0000-02-29",
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.fields.checkIn).toContain("Enter a real check-in date in YYYY-MM-DD format.");
+    expect(await stored()).toHaveLength(0);
   });
 
   it("keeps stays separate per stop, rejects a second stay on one stop, and preserves the first record", async () => {
