@@ -3,12 +3,16 @@
 **Your journeys, mapped.** A private travel journal built feature-by-feature
 according to the approved [PLAN.md](PLAN.md).
 
-## Current feature: Authentication
+## Implemented foundation
 
 Public landing page, embedded Clerk sign-up/sign-in, logout, and a protected
-account page backed by PostgreSQL. Only the `users` table exists at this stage.
-Trips, maps, accommodations, routing, stars, search, and statistics are not
-implemented yet.
+account page backed by PostgreSQL. Feature 2 adds the complete relational
+foundation: `users`, `trips`, `stops`, `stays`, and `stars`, with constraints,
+indexes, cascading foreign keys, and typed Drizzle relationships.
+
+Trip CRUD and the map, routing, accommodations, favorites, search, and dashboard
+APIs/UI are not implemented yet. The Feature 2 schema is development-only until
+the owner merges and republishes it.
 
 ## Stack and setup
 
@@ -42,7 +46,10 @@ Integration tests require the development schema/database. They mock Clerk's
 external identity boundary, not PostgreSQL, use uniquely prefixed synthetic
 test identities, and remove only their own rows after the run.
 See [authentication verification](docs/auth-verification.md) for actual results
-and remaining verification limitations.
+and [database verification](docs/database-verification.md) for the database tests
+and current production checkpoint. The full suite currently has 25 passing
+tests; database test fixtures run in rollback transactions and do not populate
+travel history.
 
 ## Code map
 
@@ -51,7 +58,7 @@ and remaining verification limitations.
 - `lib/db`: Drizzle schema/database connection
 - `lib/api-spec`: source OpenAPI contract and generation configuration
 - `lib/api-client-react`, `lib/api-zod`: generated client and response validation
-- `schema.md`: currently implemented schema and ownership conventions
+- `schema.md`: all five tables, constraints, relationships, and future ownership conventions
 - `prompts/`: actual development instructions and decision records
 
 ## Authentication and authorization foundation
@@ -73,6 +80,7 @@ All changes use Issues, feature branches, prompt logs, tests, and reviewed PRs.
 Only the owner merges. After each merged feature, once deployable, review costs,
 publish through the owner-controlled Replit Publish flow, and verify the live
 feature before starting the next one. Development and production Clerk users
-and databases are separate. No production release has been claimed here.
+and databases are separate. Authentication is published at
+https://trip-log.replit.app; Feature 2's schema is not yet published.
 Replit applies managed production schema changes through Publish; no application
 startup DDL or production migration script is used.
