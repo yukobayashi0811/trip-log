@@ -1,0 +1,1 @@
+- [Replit tooling precautions](replit-tooling.md) — verify Git checkout boundaries before pushing; artifact-router is a launcher, even with --help.

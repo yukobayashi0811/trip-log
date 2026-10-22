@@ -133,7 +133,8 @@ version through `npm exec`. The web build also receives `PORT` and `BASE_PATH`
 explicitly because Vite requires them while loading its production config.
 
 The API build succeeded with the bootstrap command. The web build succeeded with
-the bootstrap command plus those environment values. The deployment itself was
-not retried; PR #16 remains open for review, and Replit still reports the
-previous successful published build. Autoscale target and machine settings
-remain unchanged.
+the bootstrap command plus those environment values. Workspace TypeScript
+checks also passed. No cloud publishing retry was performed. PR #16 was already
+merged before this follow-up could be added, so this build fix is not included
+in that merged PR and needs a separate reviewed PR. No Autoscale target or
+machine-setting changes are part of this fix.
