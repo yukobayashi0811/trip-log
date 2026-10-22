@@ -161,7 +161,9 @@ warnings were nonblocking.
 
 All three synthetic browser trips were removed through confirmed trip deletion.
 A before-login ID baseline and actual `/api/auth/me` UUID proved the internal
-test account was new; it was removed only after confirming no other trips/stars.
+test accounts were new; they were removed only after confirming no other trips/stars.
+The helper signed out before final cleanup. Its final identity check synchronized
+another empty internal test row, also proven absent from the baseline and removed.
 All four baseline development accounts remain. Post-test queries found zero
 trips/stops/stays/stars and zero reserved backend-test accounts. External helper
 identity removal was not attempted through unsupported methods. No production

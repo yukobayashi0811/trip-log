@@ -117,5 +117,7 @@ Main corrected selection-driven Leaflet popup open/close, then rechecked
 frontend typecheck/build. The same testing helper was asked to recheck only
 marker A → itinerary B → marker A, not the entire lifecycle. It passed after
 the brief popup transition settled; the helper cleaned its temporary trip.
-All testing trips and only the proven-new internal test account were removed;
-the four pre-login baseline accounts were preserved.
+All testing trips and only proven-new internal test account rows were removed;
+the four pre-login baseline accounts were preserved. The helper signed out
+before final cleanup; its final auth check synchronized another empty new test
+row, which was likewise identified by the actual UUID and safely removed.
