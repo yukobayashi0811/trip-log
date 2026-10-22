@@ -65,29 +65,39 @@ hashes):
 - [Exact controlled defect diff](../evidence/tests/stars-isolation-controlled-defect.diff)
 - [Evidence explanation](../evidence/tests/README.md#feature-8--star-ownership)
 
-## Authenticated browser limitation and manual checklist
+## Authenticated browser verification — completed and accepted
 
-An authorized, isolated development browser identity was not available in this
-session. The available browser capture is signed out; no Clerk login was
-bypassed, no credentials were inspected, and no production data was touched.
-The screenshots above show the actual backend test output, not browser
-verification of the application UI.
+The earlier lack of an authorized browser identity was resolved in a separate
+development sandbox. The exact implementation at
+`dff12a83086f02a0f9982d1b1988f68960a7655e` passed **27 recorded browser
+assertions** at desktop 1280×900 and mobile 390×844. Two synthetic Development
+Clerk users signed in through legitimate, short-lived Clerk-issued tickets;
+authentication middleware was not bypassed. Both users and all local database
+fixtures were removed after testing. No production data was accessed.
 
-Before considering the feature live-verified, sign in with a development test
-account and synthetic trip, then check:
+Checks covered starring/unstarring in All Trips and Trip Detail, Starred Trips
+contents, reload/sign-in persistence, account isolation, keyboard activation,
+mobile touch/layout, failed PUT/DELETE requests retaining the actual saved
+state, and successful mutation/list retries.
 
-1. At desktop and mobile widths, star a trip from All Trips; confirm the saved
-   icon/label changes and the trip appears on Starred Trips.
-2. Open the trip from Starred Trips and confirm Trip Detail shows the same
-   saved state. Reload, then sign out and back into the same account; confirm
-   the star remains.
-3. Unstar from Trip Detail and confirm it disappears from Starred Trips. With
-   no stars remaining, confirm the empty message and All Trips link.
-4. Repeat the toggles using keyboard navigation; verify focus visibility,
-   labels, loading, error/retry behavior, and that a failed request does not
-   change the displayed saved state.
-5. Use a second development account and verify the first account's favorites
-   never appear there. Confirm existing trip CRUD, map stops, accommodations,
-   and road routes still work.
+The [accepted parent report](stars-isolated-parent-verification.md) contains
+the precise scope, genuine signed-in screenshots, raw logs, and cleanup counts.
+The earlier red/green backend screenshots remain distinct from that real
+browser evidence. The evidence is now included in this PR's file changes,
+not merely linked from a separate branch.
+
+Application behavior remains unchanged by reconciliation, so the accepted
+browser run remains applicable. Final API, TypeScript, and production-build
+rerun results are recorded against the exact PR head in the PR description.
+
+### Remaining limits
+
+- This is isolated Development verification, not published-site verification.
+- The API suite mocks the external Clerk boundary; the browser run used real
+  Clerk Development sessions.
+- The browser run verifies Feature 8 behavior, not an exhaustive new browser
+  regression of every previously implemented map, routing, and stay flow.
+- Final Task #6 reconciliation remains gated on receiving and inspecting its
+  actual returned diff. See [reconciliation status](stars-reconciliation.md).
 
 Feature 9 search/filter/sort and Feature 10 dashboard remain out of scope.

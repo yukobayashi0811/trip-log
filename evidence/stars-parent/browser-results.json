@@ -1,0 +1,118 @@
+{
+  "commit": "dff12a83086f02a0f9982d1b1988f68960a7655e",
+  "verifiedAt": "2026-10-22T19:37:49.383Z",
+  "isolatedDatabase": true,
+  "results": [
+    {
+      "name": "Exact PR app renders the signed-out desktop landing page",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "Authenticated browser API creates an isolated synthetic trip",
+      "passed": true
+    },
+    {
+      "name": "All Trips initially shows unstarred state",
+      "passed": true
+    },
+    {
+      "name": "Desktop All Trips star click saves successfully",
+      "passed": true
+    },
+    {
+      "name": "Starred Trips lists the saved trip",
+      "passed": true
+    },
+    {
+      "name": "Trip Detail and reload preserve the saved state",
+      "passed": true
+    },
+    {
+      "name": "Star control receives keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Keyboard Enter removes a star",
+      "passed": true
+    },
+    {
+      "name": "Controlled 500 shows failure without falsely marking starred",
+      "passed": true
+    },
+    {
+      "name": "Retry after failed star saves correctly",
+      "passed": true
+    },
+    {
+      "name": "Controlled 500 does not falsely remove the saved star",
+      "passed": true
+    },
+    {
+      "name": "Failed unstar preserves the actual database favorite",
+      "passed": true
+    },
+    {
+      "name": "Retry after failed unstar removes it correctly",
+      "passed": true
+    },
+    {
+      "name": "Mobile All Trips has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile Trip Detail has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile Detail star control has a visible 44-pixel touch target",
+      "passed": true
+    },
+    {
+      "name": "Mobile Starred Trips has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile touch star/unstar, detail, and starred list agree",
+      "passed": true
+    },
+    {
+      "name": "Mobile reload preserves starred-trip persistence",
+      "passed": true
+    },
+    {
+      "name": "Failed Starred Trips request provides an actionable retry",
+      "passed": true
+    },
+    {
+      "name": "Starred Trips retry restores saved data",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "A second genuinely Clerk-authenticated user cannot list, read, star, or unstar the owner trip",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "Sign-out/sign-in preserves owner star and does not reuse the other user cache",
+      "passed": true
+    },
+    {
+      "name": "Synthetic trip cleanup succeeds through authenticated owner API",
+      "passed": true
+    }
+  ],
+  "syntheticUsersCreated": 2,
+  "syntheticUsersDeleted": 2,
+  "authenticationBypassed": false
+}
