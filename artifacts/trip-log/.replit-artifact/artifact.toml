@@ -15,9 +15,15 @@ localPort = 21377
 run = "pnpm --filter @workspace/trip-log run dev"
 
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/trip-log", "run", "build" ]
 serve = "static"
 publicDir = "artifacts/trip-log/dist/public"
+
+[services.production.build]
+args = ["npm", "exec", "--yes", "--package=pnpm@10.26.1", "--", "pnpm", "--filter", "@workspace/trip-log", "run", "build"]
+
+[services.production.build.env]
+PORT = "21377"
+BASE_PATH = "/"
 
 [[services.production.rewrites]]
 from = "/*"
