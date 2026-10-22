@@ -1,0 +1,5 @@
+--- artifacts/api-server/src/routes/dashboard.ts (correct)
++++ artifacts/api-server/src/routes/dashboard.ts (temporary defect)
+@@
+-      (SELECT coalesce(sum(st.check_out - st.check_in), 0)::int FROM stays st
++      (SELECT (coalesce(sum(st.check_out - st.check_in), 0) + 1)::int FROM stays st

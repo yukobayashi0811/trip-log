@@ -60,7 +60,9 @@ Feature 10 adds a private, responsive `/dashboard` with trip and stop counts,
 calendar-date accommodation nights, and chronological trip-start month totals.
 One authenticated snapshot query aggregates each metric separately, avoiding
 join multiplication and excluding other owners. No schema or infrastructure
-change is needed. See [Dashboard verification and Test B](docs/dashboard-verification.md).
+change is needed. See [Dashboard verification and Test B](docs/dashboard-verification.md)
+and the separate [Plan vs. Reality record](docs/plan-vs-reality.md). The original
+approved plan is unchanged.
 
 ## Stack and setup
 

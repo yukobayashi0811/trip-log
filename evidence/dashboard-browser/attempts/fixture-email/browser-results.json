@@ -1,0 +1,27 @@
+{
+  "testedCommit": "43f1417fbebe4cea177cbe6a5e0d5ab3c973a56b",
+  "uncommittedApplicationFiles": [],
+  "testedAt": "2026-10-22T22:05:54.386Z",
+  "origin": "http://127.0.0.1:23451",
+  "database": "isolated local feature10_browser",
+  "authentication": "real temporary Clerk Development accounts and short-lived tickets; no auth bypass",
+  "builtInTester": "unavailable: Unknown config kind: testing",
+  "interception": "Only delay/500 for loading/error/retry; success metrics use actual API/database",
+  "results": [
+    {
+      "name": "Unauthenticated dashboard is denied",
+      "passed": true
+    },
+    {
+      "name": "Unprocessable Entity",
+      "passed": false
+    }
+  ],
+  "requests": [
+    {
+      "endpoint": "/api/dashboard",
+      "status": 401
+    }
+  ],
+  "browserErrors": []
+}

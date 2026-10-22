@@ -1,0 +1,8 @@
+{
+  "publishingBranch": "sync/feature9-publishing",
+  "publishingHead": "0abfeb6f8641d7a791e1733ef1c5a7279a4ff8a5",
+  "configurationBlob": "e63fc4a393d6674c3e666defea7445a7192d1ebf",
+  "backupsUnchanged": true,
+  "rootChanges": "M .agents/memory/parallel-verification.md",
+  "note": "Only Agent memory provenance guidance was updated in root metadata. Publishing app source/configuration, existing local commits and backup refs were not changed. Feature10 changes are isolated in feature/dashboard."
+}
