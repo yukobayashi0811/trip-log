@@ -122,3 +122,18 @@ then enter unsaved values for Stop A, switch to Stop B, cancel the discard
 confirmation and verify A's values remain, then confirm discard and verify B
 shows only its own stay or a blank form. Repeat the authenticated CRUD and stop
 switch checks at desktop and mobile widths.
+
+## Publishing build failure follow-up
+
+The 2026-10-22 publishing attempt stopped before application compilation because
+the API artifact build runner could not find the `pnpm` executable. Both
+production artifact manifests previously invoked `pnpm` directly. The root
+package now pins pnpm 10.26.1, and both build commands bootstrap that pinned
+version through `npm exec`. The web build also receives `PORT` and `BASE_PATH`
+explicitly because Vite requires them while loading its production config.
+
+The API build succeeded with the bootstrap command. The web build succeeded with
+the bootstrap command plus those environment values. The deployment itself was
+not retried; PR #16 remains open for review, and Replit still reports the
+previous successful published build. Autoscale target and machine settings
+remain unchanged.
