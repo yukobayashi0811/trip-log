@@ -1,0 +1,17 @@
+PASS Unauthenticated dashboard is denied
+Attention: Clerk collects telemetry data from its SDKs when connected to development instances.
+The data collected is used to inform Clerk's product roadmap.
+To learn more, including how to opt-out from the telemetry program, visit: https://clerk.com/docs/telemetry.
+
+PASS User A: real Clerk Development session authenticated
+PASS Empty authenticated dashboard has honest zeros and empty state
+PASS Two stays total exactly three nights; extra stops and stars do not multiply metrics
+PASS Monthly table uses trip start month and retains year
+PASS Reload preserves the saved dashboard metrics
+PASS 390px mobile has no horizontal overflow
+PASS Mobile dashboard nav is labelled, reachable and touch-sized
+PASS Mobile monthly table and nights are readable
+PASS Delayed dashboard response shows loading, not invented zeros
+FAIL Timed out: actionable error
+PASS Synthetic owner trip cleanup returns 204
+PASS Synthetic owner trip cleanup returns 204

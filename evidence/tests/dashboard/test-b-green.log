@@ -1,0 +1,18 @@
+
+ RUN  v5.0.5 /home/runner/workspace/generated-artifacts/feature10-worktree/artifacts/api-server
+
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > requires authentication
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > returns honest zeros and no months for an empty journal
+ ✓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > Test B: two stays equal exactly three nights despite other users, extra stops and stars 161ms
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > groups trip START dates chronologically by month AND year, not trip end dates
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > counts leap-day and year-boundary stays using date subtraction
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > refreshes after stay edits/deletion and cascading trip deletion
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > returns a safe error instead of partial/zero totals on database failure
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 6 skipped (7)
+   Start at  15:00:11
+   Duration  1.62s (import 78%, tests 12%, transform 9%)
+
+
+Restored implementation test exit code: 0
