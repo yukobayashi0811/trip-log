@@ -1,0 +1,37 @@
+{
+  "testedCommit": "5dcc61e8e9a5ee0a6fe32d11b87a99b63b0d08a8",
+  "checkout": "clean detached checkout of final PR head",
+  "verifiedAt": "2026-10-22T21:18:55.205Z",
+  "authenticationBypassed": false,
+  "clerkIdentityDeleted": true,
+  "results": [
+    {
+      "name": "Clean PR-head checkout reaches the authenticated empty All Trips page",
+      "passed": true
+    },
+    {
+      "name": "Clean PR-head checkout serves the authenticated Feature 9 UI",
+      "passed": true
+    },
+    {
+      "name": "Authenticated trip appears in the clean-head All Trips list",
+      "passed": true
+    },
+    {
+      "name": "Title search returns the authenticated synthetic trip",
+      "passed": true
+    },
+    {
+      "name": "Combined region and start-year filters retain the matching trip",
+      "passed": true
+    },
+    {
+      "name": "Mobile search layout is visible and has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Synthetic trip was deleted through its authenticated owner API",
+      "passed": true
+    }
+  ]
+}

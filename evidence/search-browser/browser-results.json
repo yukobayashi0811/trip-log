@@ -1,0 +1,266 @@
+{
+  "commit": "f9222a3bcb897fc7da916af0aa61ecaaf8d0f3a4",
+  "verifiedAt": "2026-10-22T21:02:21.404Z",
+  "isolatedDatabase": true,
+  "results": [
+    {
+      "name": "Exact PR app renders the signed-out desktop landing page",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "Authenticated browser API creates an isolated synthetic trip",
+      "passed": true
+    },
+    {
+      "name": "All Trips initially shows unstarred state",
+      "passed": true
+    },
+    {
+      "name": "Desktop All Trips star click saves successfully",
+      "passed": true
+    },
+    {
+      "name": "Starred Trips lists the saved trip",
+      "passed": true
+    },
+    {
+      "name": "Trip Detail and reload preserve the saved state",
+      "passed": true
+    },
+    {
+      "name": "Star control receives keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Keyboard Enter removes a star",
+      "passed": true
+    },
+    {
+      "name": "Controlled 500 shows failure without falsely marking starred",
+      "passed": true
+    },
+    {
+      "name": "Retry after failed star saves correctly",
+      "passed": true
+    },
+    {
+      "name": "Controlled 500 does not falsely remove the saved star",
+      "passed": true
+    },
+    {
+      "name": "Failed unstar preserves the actual database favorite",
+      "passed": true
+    },
+    {
+      "name": "Retry after failed unstar removes it correctly",
+      "passed": true
+    },
+    {
+      "name": "Mobile All Trips has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile Trip Detail has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile Detail star control has a visible 44-pixel touch target",
+      "passed": true
+    },
+    {
+      "name": "Mobile Starred Trips has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile touch star/unstar, detail, and starred list agree",
+      "passed": true
+    },
+    {
+      "name": "Mobile reload preserves starred-trip persistence",
+      "passed": true
+    },
+    {
+      "name": "Failed Starred Trips request provides an actionable retry",
+      "passed": true
+    },
+    {
+      "name": "Starred Trips retry restores saved data",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "A second genuinely Clerk-authenticated user cannot list, read, star, or unstar the owner trip",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "Sign-out/sign-in preserves owner star and does not reuse the other user cache",
+      "passed": true
+    },
+    {
+      "name": "Synthetic trip cleanup succeeds through authenticated owner API",
+      "passed": true
+    },
+    {
+      "name": "Owner API creates isolated search fixture: Kyoto Spring",
+      "passed": true
+    },
+    {
+      "name": "Owner API creates isolated search fixture: Osaka Spring",
+      "passed": true
+    },
+    {
+      "name": "Owner API creates isolated search fixture: Paris Autumn",
+      "passed": true
+    },
+    {
+      "name": "Owner API creates isolated search fixture: London Winter",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "A second authenticated account cannot list the owner search fixtures",
+      "passed": true
+    },
+    {
+      "name": "Another account does not receive search options derived from the owner trips",
+      "passed": true
+    },
+    {
+      "name": "Clerk-issued ticket completed a real Development sign-in",
+      "passed": true
+    },
+    {
+      "name": "All Trips shows all four owner-scoped search fixtures newest first",
+      "passed": true
+    },
+    {
+      "name": "Repeated region names share one region option",
+      "passed": true
+    },
+    {
+      "name": "Year options are derived from start dates in descending date-only order",
+      "passed": true
+    },
+    {
+      "name": "Search, region, year, and sort controls have visible associated labels",
+      "passed": true
+    },
+    {
+      "name": "Keyboard Tab moves from search into the labelled region filter",
+      "passed": true
+    },
+    {
+      "name": "Trimmed case-insensitive partial title search returns both Spring trips",
+      "passed": true
+    },
+    {
+      "name": "Matching result count reflects title search",
+      "passed": true
+    },
+    {
+      "name": "No-match state and zero count are distinct from no-trips-created state",
+      "passed": true
+    },
+    {
+      "name": "Empty-state clear restores all matching trips",
+      "passed": true
+    },
+    {
+      "name": "Region filter matches the deduplicated Japan region",
+      "passed": true
+    },
+    {
+      "name": "Region, year, and title filters combine",
+      "passed": true
+    },
+    {
+      "name": "A cross-year trip is filtered using its date-only start year",
+      "passed": true
+    },
+    {
+      "name": "Year filter includes trips starting in 2024 regardless of end year",
+      "passed": true
+    },
+    {
+      "name": "Oldest-first sort is stable for equal start dates",
+      "passed": true
+    },
+    {
+      "name": "Clear-all control appears for non-default sort",
+      "passed": true
+    },
+    {
+      "name": "Clear all restores default newest-first order",
+      "passed": true
+    },
+    {
+      "name": "Clear all resets search and sort controls",
+      "passed": true
+    },
+    {
+      "name": "Title query finds the trip before starring",
+      "passed": true
+    },
+    {
+      "name": "Starred-only filter shows a newly starred trip",
+      "passed": true
+    },
+    {
+      "name": "Starred-only results react to unstar and show no match",
+      "passed": true
+    },
+    {
+      "name": "Turning off starred-only restores the title match",
+      "passed": true
+    },
+    {
+      "name": "Clear all returns the full owner trip list",
+      "passed": true
+    },
+    {
+      "name": "Mobile All Trips retains the complete search result set",
+      "passed": true
+    },
+    {
+      "name": "Mobile search and filter controls have no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile title search remains usable",
+      "passed": true
+    },
+    {
+      "name": "Owner API removes isolated browser fixture: Kyoto Spring",
+      "passed": true
+    },
+    {
+      "name": "Owner API removes isolated browser fixture: Osaka Spring",
+      "passed": true
+    },
+    {
+      "name": "Owner API removes isolated browser fixture: Paris Autumn",
+      "passed": true
+    },
+    {
+      "name": "Owner API removes isolated browser fixture: London Winter",
+      "passed": true
+    }
+  ],
+  "syntheticUsersCreated": 3,
+  "syntheticUsersDeleted": 3,
+  "authenticationBypassed": false
+}

@@ -49,7 +49,14 @@ favorites. Travelers can star trips from All Trips or Trip Detail, and browse,
 open, or unstar them from Starred Trips. Repeated star/unstar operations are
 idempotent; no schema migration or additional table is needed. See
 [star verification and ownership evidence](docs/stars-verification.md).
-Feature 9 search/filter/sort and Feature 10 dashboard remain unimplemented.
+
+Feature 9 adds responsive title search, current-user region and start-year
+filters, a starred-only toggle, and newest/oldest sorting to All Trips. Filters
+combine in the browser using the existing owner-scoped trip and star APIs, with
+deterministic date ties and separate no-trips/no-matches states. It adds no
+endpoint, schema change, or dependency. See
+[search, filter, and sort verification](docs/search-verification.md).
+Feature 10 dashboard remains unimplemented.
 
 ## Stack and setup
 
