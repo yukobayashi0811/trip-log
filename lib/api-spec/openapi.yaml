@@ -11,6 +11,49 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /starred-trips:
+    get:
+      operationId: getStarredTrips
+      summary: List only the current user's starred trips
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200":
+          description: The current user's starred trips, newest start date first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Trip" }
+        "401": { description: Sign-in required }
+  /trips/{tripId}/star:
+    parameters:
+      - { $ref: "#/components/parameters/TripId" }
+    put:
+      operationId: starTrip
+      summary: Star an owned trip (idempotent)
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200":
+          description: Trip is starred
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StarState" }
+        "400": { description: Invalid trip ID }
+        "401": { description: Sign-in required }
+        "404": { description: Trip not found or not owned }
+    delete:
+      operationId: unstarTrip
+      summary: Remove the current user's star from an owned trip (idempotent)
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200":
+          description: Trip is unstarred
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StarState" }
+        "400": { description: Invalid trip ID }
+        "401": { description: Sign-in required }
+        "404": { description: Trip not found or not owned }
   /trips/{tripId}/routes:
     parameters:
       - { $ref: "#/components/parameters/TripId" }
@@ -451,6 +494,11 @@ components:
         tripType: { type: [string, "null"] }
         notes: { type: [string, "null"] }
         createdAt: { type: string, format: date-time }
+    StarState:
+      type: object
+      required: [isStarred]
+      properties:
+        isStarred: { type: boolean }
     CurrentUser:
       type: object
       required: [id, email, createdAt]

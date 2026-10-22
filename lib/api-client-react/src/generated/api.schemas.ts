@@ -226,6 +226,10 @@ export interface Trip {
   createdAt: string;
 }
 
+export interface StarState {
+  isStarred: boolean;
+}
+
 export interface CurrentUser {
   id: string;
   email: string;

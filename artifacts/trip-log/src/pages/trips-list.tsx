@@ -1,6 +1,6 @@
 import { Link } from 'wouter';
 import { Plus } from 'lucide-react';
-import { useListTrips, getListTripsQueryKey } from '@workspace/api-client-react';
+import { useGetStarredTrips, useListTrips, getGetStarredTripsQueryKey, getListTripsQueryKey } from '@workspace/api-client-react';
 import { AppShell } from '@/components/app-shell';
 import { ErrorPanel } from '@/components/trips/trip-states';
 import { TripRow } from '@/components/trips/trip-row';
@@ -18,6 +18,7 @@ function NewTripLink({ testId }: { testId: string }) {
 export default function TripsListPage({ userId }: { userId: string }) {
   usePageMeta('All trips — Trip Log', 'Every journey in your private Trip Log.');
   const q = useListTrips({ query: { queryKey: [...getListTripsQueryKey(), userId], retry: false, refetchOnMount: 'always', refetchOnWindowFocus: true } });
+  const starredQ = useGetStarredTrips({ query: { queryKey: [...getGetStarredTripsQueryKey(), userId], retry: false, refetchOnMount: 'always', refetchOnWindowFocus: true } });
   const trips = q.data;
 
   return (
@@ -32,7 +33,7 @@ export default function TripsListPage({ userId }: { userId: string }) {
       </div>
 
       <section className="mt-10">
-        {q.isLoading ? (
+        {q.isLoading || starredQ.isLoading ? (
           <ul className="space-y-3" aria-busy="true" aria-label="Loading trips" data-testid="status-loading">
             {[0, 1, 2, 3].map((i) => (
               <li key={i} className="flex items-center gap-5 px-3 py-4">
@@ -43,6 +44,8 @@ export default function TripsListPage({ userId }: { userId: string }) {
           </ul>
         ) : q.isError || !trips ? (
           <ErrorPanel title="Your trips didn't load" message={apiErrorInfo(q.error).message.replace('saving', 'loading')} onRetry={() => q.refetch()} retrying={q.isFetching} />
+        ) : starredQ.isError || !starredQ.data ? (
+          <ErrorPanel title="Star status didn't load" message="Your trips are safe, but star status couldn't be checked. Retry to see the latest saved state." onRetry={() => starredQ.refetch()} retrying={starredQ.isFetching} />
         ) : trips.length === 0 ? (
           <div className="rise grid items-center gap-8 rounded-[2rem] border border-dashed border-border bg-card/60 p-8 md:grid-cols-[1fr_auto] md:p-12" data-testid="status-empty">
             <div>
@@ -57,7 +60,7 @@ export default function TripsListPage({ userId }: { userId: string }) {
           </div>
         ) : (
           <ul className="-mx-3 divide-y divide-border/60 md:-mx-5" data-testid="list-trips">
-            {trips.map((t, i) => <TripRow key={t.id} trip={t} index={i} />)}
+            {trips.map((t, i) => <TripRow key={t.id} trip={t} index={i} userId={userId} isStarred={starredQ.data.some((starred) => starred.id === t.id)} />)}
           </ul>
         )}
       </section>

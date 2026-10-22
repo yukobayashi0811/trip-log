@@ -29,6 +29,7 @@ import type {
   HealthStatus,
   InvalidTripRequestResponse,
   OneStopResponse,
+  StarState,
   Stay,
   StayInput,
   Stop,
@@ -66,6 +67,255 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGetStarredTripsUrl = () => {
+
+
+
+
+  return `/api/starred-trips`
+}
+
+/**
+ * @summary List only the current user's starred trips
+ */
+export const getStarredTrips = async ( options?: Parameters<typeof customFetch>[1]): Promise<Trip[]> => {
+
+  return customFetch<Trip[]>(getGetStarredTripsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetStarredTripsQueryKey = () => {
+    return [
+    `/api/starred-trips`
+    ] as const;
+    }
+
+
+export const getGetStarredTripsQueryOptions = <TData = Awaited<ReturnType<typeof getStarredTrips>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStarredTrips>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStarredTripsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStarredTrips>>> = ({ signal }) => getStarredTrips({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStarredTrips>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetStarredTripsQueryResult = NonNullable<Awaited<ReturnType<typeof getStarredTrips>>>
+export type GetStarredTripsQueryError = ErrorType<void>
+
+
+export function useGetStarredTrips<TData = Awaited<ReturnType<typeof getStarredTrips>>, TError = ErrorType<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStarredTrips>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStarredTrips>>,
+          TError,
+          Awaited<ReturnType<typeof getStarredTrips>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStarredTrips<TData = Awaited<ReturnType<typeof getStarredTrips>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStarredTrips>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStarredTrips>>,
+          TError,
+          Awaited<ReturnType<typeof getStarredTrips>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStarredTrips<TData = Awaited<ReturnType<typeof getStarredTrips>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStarredTrips>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List only the current user's starred trips
+ */
+
+export function useGetStarredTrips<TData = Awaited<ReturnType<typeof getStarredTrips>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStarredTrips>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetStarredTripsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getStarTripUrl = (tripId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/star`
+}
+
+/**
+ * @summary Star an owned trip (idempotent)
+ */
+export const starTrip = async (tripId: string, options?: Parameters<typeof customFetch>[1]): Promise<StarState> => {
+
+  return customFetch<StarState>(getStarTripUrl(tripId),
+  {
+    ...options,
+    method: 'PUT'
+
+
+  }
+);}
+
+
+
+
+
+export const getStarTripMutationKey = () => ['starTrip'] as const;
+
+export const getStarTripMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof starTrip>>, TError,StarTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof starTrip>>, TError,StarTripMutationVariables, TContext> => {
+
+const mutationKey = getStarTripMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof starTrip>>, StarTripMutationVariables> = (props) => {
+          const {tripId} = props ?? {};
+
+          return  starTrip(tripId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StarTripMutationResult = NonNullable<Awaited<ReturnType<typeof starTrip>>>
+
+    export type StarTripMutationError = ErrorType<void>
+    export type StarTripMutationVariables = {tripId: string}
+
+    /**
+ * @summary Star an owned trip (idempotent)
+ */
+export const useStarTrip = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof starTrip>>, TError,StarTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof starTrip>>,
+        TError,
+        StarTripMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStarTripMutationOptions(options), queryClient);
+    }
+
+export const getUnstarTripUrl = (tripId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/star`
+}
+
+/**
+ * @summary Remove the current user's star from an owned trip (idempotent)
+ */
+export const unstarTrip = async (tripId: string, options?: Parameters<typeof customFetch>[1]): Promise<StarState> => {
+
+  return customFetch<StarState>(getUnstarTripUrl(tripId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getUnstarTripMutationKey = () => ['unstarTrip'] as const;
+
+export const getUnstarTripMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unstarTrip>>, TError,UnstarTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof unstarTrip>>, TError,UnstarTripMutationVariables, TContext> => {
+
+const mutationKey = getUnstarTripMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unstarTrip>>, UnstarTripMutationVariables> = (props) => {
+          const {tripId} = props ?? {};
+
+          return  unstarTrip(tripId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnstarTripMutationResult = NonNullable<Awaited<ReturnType<typeof unstarTrip>>>
+
+    export type UnstarTripMutationError = ErrorType<void>
+    export type UnstarTripMutationVariables = {tripId: string}
+
+    /**
+ * @summary Remove the current user's star from an owned trip (idempotent)
+ */
+export const useUnstarTrip = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unstarTrip>>, TError,UnstarTripMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof unstarTrip>>,
+        TError,
+        UnstarTripMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUnstarTripMutationOptions(options), queryClient);
+    }
 
 export const getGetTripRoutesUrl = (tripId: string,) => {
 

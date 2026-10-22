@@ -5,6 +5,7 @@ import tripsRouter from "./trips";
 import stopsRouter from "./stops";
 import routingRouter from "./routing";
 import staysRouter from "./stays";
+import starsRouter from "./stars";
 
 const router: IRouter = Router();
 
@@ -13,6 +14,7 @@ router.use(authRouter);
 router.use(routingRouter);
 router.use(staysRouter);
 router.use(stopsRouter);
+router.use(starsRouter);
 router.use(tripsRouter);
 
 export default router;

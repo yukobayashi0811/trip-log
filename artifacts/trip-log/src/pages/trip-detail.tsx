@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'wouter';
 import { ArrowLeft, BedDouble, CalendarRange, Compass, Map as MapIcon, MapPin, Pencil, Star } from 'lucide-react';
-import { useGetTrip, useListStops, getGetTripQueryKey, getListStopsQueryKey } from '@workspace/api-client-react';
+import { useGetStarredTrips, useGetTrip, useListStops, getGetStarredTripsQueryKey, getGetTripQueryKey, getListStopsQueryKey } from '@workspace/api-client-react';
 import { AppShell } from '@/components/app-shell';
 import { DeleteTripDialog } from '@/components/trips/delete-trip-dialog';
 import { DetailSkeleton, ErrorPanel, TripNotFound } from '@/components/trips/trip-states';
 import { apiErrorInfo, errorStatus, formatDate, tripDays } from '@/lib/trips';
 import { usePageMeta } from '@/lib/page-meta';
+import { TripStarButton } from '@/components/trips/trip-star-button';
 
 function Fact({ icon, label, value, testId }: { icon: ReactNode; label: string; value: string | null; testId: string }) {
   return (
@@ -24,6 +25,7 @@ export default function TripDetailPage({ userId }: { userId: string }) {
   const { id = '' } = useParams<{ id: string }>();
   const q = useGetTrip(id, { query: { enabled: !!id, queryKey: [...getGetTripQueryKey(id), userId], retry: false, refetchOnMount: 'always', refetchOnWindowFocus: true } });
   const stopsQ = useListStops(id, { query: { enabled: !!id, queryKey: [...getListStopsQueryKey(id), userId], retry: false, refetchOnMount: 'always', refetchOnWindowFocus: true } });
+  const starredQ = useGetStarredTrips({ query: { queryKey: [...getGetStarredTripsQueryKey(), userId], retry: false, refetchOnMount: 'always', refetchOnWindowFocus: true } });
   const trip = q.data;
   usePageMeta(trip ? `${trip.title} — Trip Log` : 'Trip — Trip Log', 'A trip in your private journal.');
 
@@ -43,6 +45,14 @@ export default function TripDetailPage({ userId }: { userId: string }) {
           <div className="flex items-center gap-2">
             <Link href={`/trips/${trip.id}/map`} className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" data-testid="link-trip-map"><MapIcon className="h-4 w-4" /> Map</Link>
             <Link href={`/trips/${trip.id}/edit`} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-card" data-testid="link-edit-trip"><Pencil className="h-4 w-4" /> Edit</Link>
+            <TripStarButton
+              tripId={trip.id}
+              userId={userId}
+              isStarred={starredQ.data?.some((starred) => starred.id === trip.id)}
+              loading={starredQ.isLoading}
+              error={starredQ.isError}
+              onRetry={() => starredQ.refetch()}
+            />
             <DeleteTripDialog tripId={trip.id} title={trip.title} />
           </div>
         </div>
