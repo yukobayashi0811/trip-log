@@ -6,11 +6,14 @@ The tested implementation is PR #20's exact commit
 `dff12a83086f02a0f9982d1b1988f68960a7655e`. No Feature 8 application source
 was recreated, edited, merged, or deployed during this verification.
 
-The shared workspace remains on `feature/accommodations`, clean, at
+The shared workspace remains on `feature/accommodations`, at
 `539d151583d2f84ea812ec0029f6eff8870f9dc3`: eight local commits ahead of its
 remote tracking branch. The attachment described seven commits; the extra
 commit is the subsequent Replit setup checkpoint. The original seven-commit
-tip remains an ancestor.
+tip remains an ancestor. Application files and shared configuration are
+unchanged. The initial working tree was clean; the final local-only additions
+are parent Agent memory notes and automatically registered screenshot-library
+metadata, not application/setup changes or commits.
 
 The attachment's named backup ref was absent on inspection. It was created
 only if absent, without replacing an existing ref:
