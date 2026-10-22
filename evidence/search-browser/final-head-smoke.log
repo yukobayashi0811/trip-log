@@ -1,0 +1,11 @@
+Attention: Clerk collects telemetry data from its SDKs when connected to development instances.
+The data collected is used to inform Clerk's product roadmap.
+To learn more, including how to opt-out from the telemetry program, visit: https://clerk.com/docs/telemetry.
+
+PASS Clean PR-head checkout reaches the authenticated empty All Trips page
+PASS Clean PR-head checkout serves the authenticated Feature 9 UI
+PASS Authenticated trip appears in the clean-head All Trips list
+PASS Title search returns the authenticated synthetic trip
+PASS Combined region and start-year filters retain the matching trip
+PASS Mobile search layout is visible and has no horizontal overflow
+PASS Synthetic trip was deleted through its authenticated owner API
