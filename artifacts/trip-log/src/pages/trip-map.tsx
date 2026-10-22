@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { Link, useLocation, useParams } from 'wouter';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  ArrowDown, ArrowUp, BookOpen, CalendarDays, ChevronDown, ChevronUp, Loader2, MapPinned, PanelRightClose, PanelRightOpen, Pencil, Plus, Trash2, TriangleAlert,
+  ArrowDown, ArrowUp, BedDouble, BookOpen, CalendarDays, ChevronDown, ChevronUp, Loader2, MapPinned, PanelRightClose, PanelRightOpen, Pencil, Plus, Trash2, TriangleAlert,
 } from 'lucide-react';
 import {
   useListTrips, useGetTrip, useListStops, useGetStop, useCreateStop, useUpdateStop, useDeleteStop, useReorderStops,
@@ -11,6 +11,7 @@ import {
 import { AppShell } from '@/components/app-shell';
 import { ErrorPanel, TripNotFound } from '@/components/trips/trip-states';
 import { StopEditor } from '@/components/map/stop-editor';
+import { StayPanel } from '@/components/map/stay-panel';
 import TripMap from '@/components/map/trip-map';
 import { RoadRoutingStatus, useRoadRoutes } from '@/components/map/road-routing';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -318,6 +319,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
                       <span className="min-w-0">
                         <span className="block truncate font-medium" data-testid={`text-stop-name-${s.id}`}>{s.name}{isEditing && <span className="ml-2 text-xs font-normal text-primary">editing</span>}</span>
                         <span className="block truncate text-xs text-muted-foreground">{[s.visitDate ? formatDate(s.visitDate) : null, s.stopType].filter(Boolean).join(' · ') || `${fmtCoord(s.latitude)}, ${fmtCoord(s.longitude)}`}</span>
+                         {s.stay && <span className="mt-1 flex flex-wrap items-center gap-1 text-[11px] font-medium text-primary" data-testid={`text-stop-stay-${s.id}`}><BedDouble className="h-3 w-3" aria-hidden="true" />{s.stay.accommodationType} · {formatDate(s.stay.checkIn)} – {formatDate(s.stay.checkOut)}</span>}
                       </span>
                     </button>
                     <div className="flex shrink-0 items-center">
@@ -341,6 +343,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
               <span className="font-mono">{fmtCoord(selectedDetail.latitude)}, {fmtCoord(selectedDetail.longitude)}</span>
             </p>
             {selectedDetail.notes ? <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-relaxed" data-testid="text-selected-stop-notes">{selectedDetail.notes}</p> : <p className="mt-3 text-sm italic text-muted-foreground">No notes for this stop.</p>}
+            <StayPanel stop={selectedDetail} />
             {stopQ.isError && errorStatus(stopQ.error) !== 404 && <p className="mt-2 text-xs text-muted-foreground">Latest details couldn't refresh; showing the itinerary copy.</p>}
             <button type="button" onClick={() => openEdit(selectedDetail)} disabled={busy} className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-sm font-medium hover:bg-muted disabled:opacity-50" data-testid="button-edit-selected-stop"><Pencil className="h-3.5 w-3.5" /> Edit stop</button>
           </section>
@@ -420,7 +423,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display">Delete this stop?</AlertDialogTitle>
-            <AlertDialogDescription>"{deleteTarget?.name}" will be removed from the itinerary, and the stops after it move up. This can't be undone.</AlertDialogDescription>
+            <AlertDialogDescription>"{deleteTarget?.name}" will be removed from the itinerary, any accommodation attached to it will also be deleted, and the stops after it move up. This can't be undone.</AlertDialogDescription>
           </AlertDialogHeader>
           {deleteError && <p role="alert" className="text-sm text-destructive" data-testid="text-delete-stop-error">{deleteError}</p>}
           <AlertDialogFooter>

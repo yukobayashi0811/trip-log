@@ -111,6 +111,32 @@ export const StopTransportFromPrevious = {
   Other: 'Other',
 } as const;
 
+export type StayAccommodationType = typeof StayAccommodationType[keyof typeof StayAccommodationType];
+
+
+export const StayAccommodationType = {
+  Hotel: 'Hotel',
+  Campground: 'Campground',
+  Vacation_Rental: 'Vacation Rental',
+  Other: 'Other',
+} as const;
+
+export interface Stay {
+  id: string;
+  stopId: string;
+  accommodationType: StayAccommodationType;
+  checkIn: string;
+  checkOut: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     * @nullable
+     */
+  rating: number | null;
+  /** @nullable */
+  notes: string | null;
+}
+
 export interface Stop {
   id: string;
   tripId: string;
@@ -126,6 +152,31 @@ export interface Stop {
   transportFromPrevious: StopTransportFromPrevious;
   /** @nullable */
   notes: string | null;
+  stay: Stay | null;
+}
+
+export type StayInputAccommodationType = typeof StayInputAccommodationType[keyof typeof StayInputAccommodationType];
+
+
+export const StayInputAccommodationType = {
+  Hotel: 'Hotel',
+  Campground: 'Campground',
+  Vacation_Rental: 'Vacation Rental',
+  Other: 'Other',
+} as const;
+
+export interface StayInput {
+  accommodationType: StayInputAccommodationType;
+  checkIn: string;
+  checkOut: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     * @nullable
+     */
+  rating?: number | null;
+  /** @nullable */
+  notes?: string | null;
 }
 
 export type TripRequestErrorFields = {[key: string]: string[]};

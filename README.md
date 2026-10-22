@@ -34,7 +34,16 @@ environments. Real ORS browser checks passed, including mixed-mode sections and
 a nonzero recorded A→B→A return route. Provider/browser verification details and
 the tooltip capture limitation are documented below.
 See [routing verification, limits, setup and evidence](docs/routing-verification.md).
-Accommodations, favorites, journal search and dashboard remain unimplemented.
+
+Feature 7 adds owner-scoped accommodation CRUD for one stay per stop, with
+Hotel/Campground/Vacation Rental/Other types, date ordering, optional ratings and
+notes, and shared frontend/backend validation. Stays appear in the itinerary,
+selected-stop map panel, and trip detail. Deleting a stay leaves its stop intact;
+deleting a stop also removes its stay through the existing foreign-key cascade.
+The approved database schema already contained the stay table, so this feature
+adds no migration or deployment resource. See
+[accommodation verification and evidence](docs/accommodation-verification.md).
+Favorites, journal search and dashboard remain unimplemented.
 
 ## Stack and setup
 
@@ -72,8 +81,8 @@ See [authentication verification](docs/auth-verification.md) for actual results
 and [database verification](docs/database-verification.md) for the database tests
 and the historical database checkpoint. See [Trip CRUD verification](docs/trip-crud-verification.md)
 and [actual ownership regression evidence](evidence/tests/README.md) for Feature 3.
-The full backend suite passes **225 tests** across authentication, schema,
-trip/stop/routing API integration, provider safety and shared/HTTP validation. The Feature 3 CRUD browser
+The full backend suite passes **236 tests** across authentication, schema,
+trip/stop/stay/routing API integration, provider safety and shared/HTTP validation. The Feature 3 CRUD browser
 journey passed on desktop/mobile; the focused Feature 4 validation browser
 journey passed on desktop.
 Feature 5's actual desktop/mobile map-click CRUD/reorder/collapse browser

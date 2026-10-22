@@ -1,0 +1,5 @@
+--- restored stay-store.ts
++++ controlled-defect stay-store.ts
+@@ inOwnedStop parent trip lookup @@
+-      .where(and(eq(trips.id, tripId), eq(trips.userId, userId))).for("update");
++      .where(eq(trips.id, tripId)).for("update");

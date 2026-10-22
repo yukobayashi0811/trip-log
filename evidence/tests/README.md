@@ -22,3 +22,27 @@ hashes, and the controlled diff are retained alongside the screenshots.
 The focused runs predate the final additional payload-format test: 20 trip
 tests then, 21 in the final suite. The isolation test and owner predicate are
 unchanged. The focused screenshots make no claim that skipped tests passed.
+
+## Feature 7 — stay ownership
+
+This separate red/green pair exercises the nested stay API against the real
+PostgreSQL integration fixture. It checks read, create, update and delete using
+User B's session with User A's known trip and stop IDs. The only controlled
+change was removing the authenticated user condition from the stay store's
+parent-trip query; the focused test then observed HTTP 200 where it required
+404. Restoring that condition returned the same focused test to green. This
+shows that the test detects the owner-check failure; it does not claim that the
+Clerk provider itself was exercised by the test.
+
+- [Red test output](accommodation-isolation-red.txt) /
+  [red screenshot](accommodation-isolation-red.jpg)
+- [Restored green output](accommodation-isolation-green.txt) /
+  [green screenshot](accommodation-isolation-green.jpg)
+- [Red run command, UTC time and defect hash](accommodation-isolation-red-meta.txt) /
+  [restored green run metadata and source hash](accommodation-isolation-green-meta.txt)
+- [Exact temporary owner-check diff](accommodation-isolation-controlled-defect.diff)
+
+The screenshots render the saved focused Vitest output and distinguish skipped
+tests from the one targeted isolation test. See
+[`docs/accommodation-verification.md`](../../docs/accommodation-verification.md)
+for full-suite results and the outstanding authenticated-browser limitation.

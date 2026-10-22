@@ -1,0 +1,5 @@
+Command: pnpm --filter @workspace/api-server exec vitest run src/tests/stays.test.ts -t "blocks User B"
+UTC started: 2026-10-22T07:06:04Z
+UTC completed: 2026-10-22T07:06:06Z
+Controlled-defect source SHA-256: 7b0bdae494f260abc7dfd1f456dc8a93b7906faa0a55a98587bafb2743b2715a
+Exit status: 1 (expected failing test)

@@ -1,15 +1,16 @@
-import { and, asc, eq } from "drizzle-orm";
-import { db, stops, trips } from "@workspace/db";
+import { and, asc, eq, inArray } from "drizzle-orm";
+import { db, stays, stops, trips } from "@workspace/db";
 import type { stopInputSchema } from "@workspace/api-zod";
 
 type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 type Input = ReturnType<typeof stopInputSchema.parse>;
 type Row = typeof stops.$inferSelect;
+type StayRow = typeof stays.$inferSelect;
 export class StopRequestError extends Error {
   constructor(public status: number, message: string, public fields?: Record<string, string[]>) { super(message); }
 }
-export const stopResponse = (row: Row) => ({
-  ...row, latitude: Number(row.latitude), longitude: Number(row.longitude),
+export const stopResponse = (row: Row, stay: StayRow | null = null) => ({
+  ...row, latitude: Number(row.latitude), longitude: Number(row.longitude), stay,
 });
 
 // Every operation locks the OWNED parent first. Stop mutations on the same trip
@@ -24,6 +25,17 @@ async function inOwnedTrip<T>(userId: string, tripId: string, action: (tx: Trans
 }
 const orderedRows = (tx: Transaction, tripId: string) => tx.select().from(stops)
   .where(eq(stops.tripId, tripId)).orderBy(asc(stops.sortOrder), asc(stops.id));
+async function responseRows(tx: Transaction, rows: Row[]) {
+  if (rows.length === 0) return [];
+  const staysByStop = new Map((await tx.select().from(stays)
+    .where(inArray(stays.stopId, rows.map((row) => row.id))))
+    .map((stay) => [stay.stopId, stay]));
+  return rows.map((row) => stopResponse(row, staysByStop.get(row.id) ?? null));
+}
+async function responseRow(tx: Transaction, row: Row) {
+  const [stay] = await tx.select().from(stays).where(eq(stays.stopId, row.id));
+  return stopResponse(row, stay ?? null);
+}
 async function setOrder(tx: Transaction, tripId: string, ids: string[]) {
   // All callers hold the same parent lock; either every position commits or none.
   for (const [sortOrder, id] of ids.entries()) {
@@ -42,12 +54,12 @@ function writable(input: Input) {
   return { ...rest, latitude: latitude.toFixed(6), longitude: longitude.toFixed(6) };
 }
 export const listOwnedStops = (userId: string, tripId: string) =>
-  inOwnedTrip(userId, tripId, async (tx) => (await orderedRows(tx, tripId)).map(stopResponse));
+  inOwnedTrip(userId, tripId, async (tx) => responseRows(tx, await orderedRows(tx, tripId)));
 export const getOwnedStop = (userId: string, tripId: string, stopId: string) =>
   inOwnedTrip(userId, tripId, async (tx) => {
     const [row] = await tx.select().from(stops).where(and(eq(stops.tripId, tripId), eq(stops.id, stopId)));
     if (!row) throw new StopRequestError(404, "Stop not found.");
-    return stopResponse(row);
+    return responseRow(tx, row);
   });
 export const createOwnedStop = (userId: string, tripId: string, input: Input) =>
   inOwnedTrip(userId, tripId, async (tx) => {
@@ -57,7 +69,7 @@ export const createOwnedStop = (userId: string, tripId: string, input: Input) =>
     const ids = rows.map((item) => item.id);
     ids.splice(target, 0, row.id);
     await setOrder(tx, tripId, ids);
-    return stopResponse(row);
+    return responseRow(tx, row);
   });
 export const updateOwnedStop = (userId: string, tripId: string, stopId: string, input: Input) =>
   inOwnedTrip(userId, tripId, async (tx) => {
@@ -70,7 +82,7 @@ export const updateOwnedStop = (userId: string, tripId: string, stopId: string, 
     const ids = rows.filter((item) => item.id !== stopId).map((item) => item.id);
     ids.splice(target, 0, stopId);
     await setOrder(tx, tripId, ids);
-    return stopResponse(row);
+    return responseRow(tx, row);
   });
 export const deleteOwnedStop = (userId: string, tripId: string, stopId: string) =>
   inOwnedTrip(userId, tripId, async (tx) => {
@@ -86,5 +98,5 @@ export const reorderOwnedStops = (userId: string, tripId: string, stopIds: strin
       throw new StopRequestError(409, "The stops changed. Reload the itinerary before reordering.");
     }
     await setOrder(tx, tripId, stopIds);
-    return (await orderedRows(tx, tripId)).map(stopResponse);
+    return responseRows(tx, await orderedRows(tx, tripId));
   });
