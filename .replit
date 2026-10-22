@@ -3,6 +3,10 @@ modules = ["nodejs-24", "python-base-3.13"]
 deploymentTarget = "cloudrun"
 
 [[ports]]
+localPort = 4179
+externalPort = 3000
+
+[[ports]]
 localPort = 8000
 externalPort = 8000
 
