@@ -9,6 +9,186 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary List owned trip stops in itinerary order
+ */
+export const ListStopsParams = zod.object({
+  "tripId": zod.coerce.string().uuid()
+})
+
+export const ListStopsResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "tripId": zod.string().uuid(),
+  "name": zod.string(),
+  "latitude": zod.number(),
+  "longitude": zod.number(),
+  "sortOrder": zod.number().int(),
+  "visitDate": zod.coerce.date().nullable(),
+  "stopType": zod.string().nullable(),
+  "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable()
+})
+export const ListStopsResponse = zod.array(ListStopsResponseItem)
+
+
+/**
+ * @summary Insert a stop, appending if sortOrder is omitted
+ */
+export const CreateStopParams = zod.object({
+  "tripId": zod.coerce.string().uuid()
+})
+
+export const createStopBodyNameMax = 200;
+
+export const createStopBodyLatitudeMin = -90;
+export const createStopBodyLatitudeMax = 90;
+
+export const createStopBodyLongitudeMin = -180;
+export const createStopBodyLongitudeMax = 180;
+
+export const createStopBodySortOrderMin = 0;
+export const createStopBodySortOrderMax = 2147483647;
+
+export const createStopBodyStopTypeMax = 100;
+
+export const createStopBodyNotesMax = 20000;
+
+
+
+export const CreateStopBody = zod.object({
+  "name": zod.string().min(1).max(createStopBodyNameMax),
+  "latitude": zod.number().min(createStopBodyLatitudeMin).max(createStopBodyLatitudeMax).describe('Rounded to six decimal places on save'),
+  "longitude": zod.number().min(createStopBodyLongitudeMin).max(createStopBodyLongitudeMax).describe('Rounded to six decimal places on save'),
+  "sortOrder": zod.number().int().min(createStopBodySortOrderMin).max(createStopBodySortOrderMax).optional(),
+  "visitDate": zod.coerce.date().nullish(),
+  "stopType": zod.string().max(createStopBodyStopTypeMax).nullish(),
+  "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullish(),
+  "notes": zod.string().max(createStopBodyNotesMax).nullish()
+})
+
+export const CreateStopResponse = zod.object({
+  "id": zod.string().uuid(),
+  "tripId": zod.string().uuid(),
+  "name": zod.string(),
+  "latitude": zod.number(),
+  "longitude": zod.number(),
+  "sortOrder": zod.number().int(),
+  "visitDate": zod.coerce.date().nullable(),
+  "stopType": zod.string().nullable(),
+  "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable()
+})
+
+
+/**
+ * @summary Atomically replace itinerary order with an exact permutation of current stop IDs
+ */
+export const ReorderStopsParams = zod.object({
+  "tripId": zod.coerce.string().uuid()
+})
+
+export const ReorderStopsBody = zod.object({
+  "stopIds": zod.array(zod.string().uuid())
+})
+
+export const ReorderStopsResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "tripId": zod.string().uuid(),
+  "name": zod.string(),
+  "latitude": zod.number(),
+  "longitude": zod.number(),
+  "sortOrder": zod.number().int(),
+  "visitDate": zod.coerce.date().nullable(),
+  "stopType": zod.string().nullable(),
+  "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable()
+})
+export const ReorderStopsResponse = zod.array(ReorderStopsResponseItem)
+
+
+/**
+ * @summary Get one stop in an owned trip
+ */
+export const GetStopParams = zod.object({
+  "tripId": zod.coerce.string().uuid(),
+  "stopId": zod.coerce.string().uuid()
+})
+
+export const GetStopResponse = zod.object({
+  "id": zod.string().uuid(),
+  "tripId": zod.string().uuid(),
+  "name": zod.string(),
+  "latitude": zod.number(),
+  "longitude": zod.number(),
+  "sortOrder": zod.number().int(),
+  "visitDate": zod.coerce.date().nullable(),
+  "stopType": zod.string().nullable(),
+  "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable()
+})
+
+
+/**
+ * @summary Replace editable stop fields and optionally move its position
+ */
+export const UpdateStopParams = zod.object({
+  "tripId": zod.coerce.string().uuid(),
+  "stopId": zod.coerce.string().uuid()
+})
+
+export const updateStopBodyNameMax = 200;
+
+export const updateStopBodyLatitudeMin = -90;
+export const updateStopBodyLatitudeMax = 90;
+
+export const updateStopBodyLongitudeMin = -180;
+export const updateStopBodyLongitudeMax = 180;
+
+export const updateStopBodySortOrderMin = 0;
+export const updateStopBodySortOrderMax = 2147483647;
+
+export const updateStopBodyStopTypeMax = 100;
+
+export const updateStopBodyNotesMax = 20000;
+
+
+
+export const UpdateStopBody = zod.object({
+  "name": zod.string().min(1).max(updateStopBodyNameMax),
+  "latitude": zod.number().min(updateStopBodyLatitudeMin).max(updateStopBodyLatitudeMax).describe('Rounded to six decimal places on save'),
+  "longitude": zod.number().min(updateStopBodyLongitudeMin).max(updateStopBodyLongitudeMax).describe('Rounded to six decimal places on save'),
+  "sortOrder": zod.number().int().min(updateStopBodySortOrderMin).max(updateStopBodySortOrderMax).optional(),
+  "visitDate": zod.coerce.date().nullish(),
+  "stopType": zod.string().max(updateStopBodyStopTypeMax).nullish(),
+  "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullish(),
+  "notes": zod.string().max(updateStopBodyNotesMax).nullish()
+})
+
+export const UpdateStopResponse = zod.object({
+  "id": zod.string().uuid(),
+  "tripId": zod.string().uuid(),
+  "name": zod.string(),
+  "latitude": zod.number(),
+  "longitude": zod.number(),
+  "sortOrder": zod.number().int(),
+  "visitDate": zod.coerce.date().nullable(),
+  "stopType": zod.string().nullable(),
+  "transportFromPrevious": zod.union([zod.literal('Driving'),zod.literal('Flying'),zod.literal('Other'),zod.literal(null)]).nullable(),
+  "notes": zod.string().nullable()
+})
+
+
+/**
+ * @summary Delete a stop and compact its itinerary positions
+ */
+export const DeleteStopParams = zod.object({
+  "tripId": zod.coerce.string().uuid(),
+  "stopId": zod.coerce.string().uuid()
+})
+
+export const DeleteStopResponse = zod.void()
+
+
+/**
  * @summary List only the current user's trips, newest start date first
  */
 export const ListTripsResponseItem = zod.object({

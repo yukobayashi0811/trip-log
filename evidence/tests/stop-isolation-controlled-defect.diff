@@ -1,0 +1,13 @@
+diff --git a/tmp/map-ownership-original.ts b/artifacts/api-server/src/lib/stop-store.ts
+index bcf260a..16c158b 100644
+--- a/tmp/map-ownership-original.ts
++++ b/artifacts/api-server/src/lib/stop-store.ts
+@@ -17,7 +17,7 @@ export const stopResponse = (row: Row) => ({
+ async function inOwnedTrip<T>(userId: string, tripId: string, action: (tx: Transaction) => Promise<T>) {
+   return db.transaction(async (tx) => {
+     const [parent] = await tx.select({ id: trips.id }).from(trips)
+-      .where(and(eq(trips.id, tripId), eq(trips.userId, userId))).for("update");
++      .where(eq(trips.id, tripId)).for("update");
+     if (!parent) throw new StopRequestError(404, "Trip not found.");
+     return action(tx);
+   });

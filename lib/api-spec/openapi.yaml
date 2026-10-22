@@ -11,6 +11,99 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /trips/{tripId}/stops:
+    parameters:
+      - { $ref: "#/components/parameters/TripId" }
+    get:
+      operationId: listStops
+      summary: List owned trip stops in itinerary order
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200": { $ref: "#/components/responses/StopList" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Trip not found or not owned }
+    post:
+      operationId: createStop
+      summary: Insert a stop, appending if sortOrder is omitted
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StopInput" }
+      responses:
+        "201":
+          description: Created stop
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Stop" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Trip not found or not owned }
+        "413": { description: Request too large }
+        "415": { description: Send application/json }
+  /trips/{tripId}/stops/order:
+    parameters:
+      - { $ref: "#/components/parameters/TripId" }
+    put:
+      operationId: reorderStops
+      summary: Atomically replace itinerary order with an exact permutation of current stop IDs
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StopOrderInput" }
+      responses:
+        "200": { $ref: "#/components/responses/StopList" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Trip not found or not owned }
+        "409": { description: Stop set changed; reload before reordering }
+        "413": { description: Request too large }
+        "415": { description: Send application/json }
+  /trips/{tripId}/stops/{stopId}:
+    parameters:
+      - { $ref: "#/components/parameters/TripId" }
+      - name: stopId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      operationId: getStop
+      summary: Get one stop in an owned trip
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200": { $ref: "#/components/responses/OneStop" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Stop or parent trip not found or not owned }
+    put:
+      operationId: updateStop
+      summary: Replace editable stop fields and optionally move its position
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StopInput" }
+      responses:
+        "200": { $ref: "#/components/responses/OneStop" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Stop or parent trip not found or not owned }
+        "413": { description: Request too large }
+        "415": { description: Send application/json }
+    delete:
+      operationId: deleteStop
+      summary: Delete a stop and compact its itinerary positions
+      security: [{ sessionCookie: [] }]
+      responses:
+        "204": { description: Deleted }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Stop or parent trip not found or not owned }
   /trips:
     get:
       operationId: listTrips
@@ -128,7 +221,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 components:
+  parameters:
+    TripId:
+      name: tripId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
   responses:
+    StopList:
+      description: Stops ordered by sortOrder then UUID
+      content:
+        application/json:
+          schema:
+            type: array
+            items: { $ref: "#/components/schemas/Stop" }
+    OneStop:
+      description: Owned stop
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Stop" }
     InvalidTripRequest:
       description: Invalid input; known fields have actionable messages; root errors use formErrors
       content:
@@ -140,6 +251,42 @@ components:
       in: cookie
       name: __session
   schemas:
+    StopOrderInput:
+      type: object
+      additionalProperties: false
+      required: [stopIds]
+      properties:
+        stopIds:
+          type: array
+          uniqueItems: true
+          items: { type: string, format: uuid }
+    StopInput:
+      type: object
+      additionalProperties: false
+      required: [name, latitude, longitude]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        latitude: { type: number, minimum: -90, maximum: 90, description: Rounded to six decimal places on save }
+        longitude: { type: number, minimum: -180, maximum: 180, description: Rounded to six decimal places on save }
+        sortOrder: { type: integer, minimum: 0, maximum: 2147483647 }
+        visitDate: { type: string, format: date, nullable: true }
+        stopType: { type: string, maxLength: 100, nullable: true }
+        transportFromPrevious: { type: string, enum: [Driving, Flying, Other], nullable: true }
+        notes: { type: string, maxLength: 20000, nullable: true }
+    Stop:
+      type: object
+      required: [id, tripId, name, latitude, longitude, sortOrder, visitDate, stopType, transportFromPrevious, notes]
+      properties:
+        id: { type: string, format: uuid }
+        tripId: { type: string, format: uuid }
+        name: { type: string }
+        latitude: { type: number }
+        longitude: { type: number }
+        sortOrder: { type: integer }
+        visitDate: { type: string, format: date, nullable: true }
+        stopType: { type: string, nullable: true }
+        transportFromPrevious: { type: string, enum: [Driving, Flying, Other], nullable: true }
+        notes: { type: string, nullable: true }
     TripRequestError:
       type: object
       required: [error]

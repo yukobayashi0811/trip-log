@@ -28,6 +28,11 @@ import type {
   CurrentUser,
   HealthStatus,
   InvalidTripRequestResponse,
+  OneStopResponse,
+  Stop,
+  StopInput,
+  StopListResponse,
+  StopOrderInput,
   Trip,
   TripInput
 } from './api.schemas';
@@ -58,6 +63,561 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getListStopsUrl = (tripId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops`
+}
+
+/**
+ * @summary List owned trip stops in itinerary order
+ */
+export const listStops = async (tripId: string, options?: Parameters<typeof customFetch>[1]): Promise<StopListResponse> => {
+
+  return customFetch<StopListResponse>(getListStopsUrl(tripId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListStopsQueryKey = (tripId: string,) => {
+    return [
+    `/api/trips/${tripId}/stops`
+    ] as const;
+    }
+
+
+export const getListStopsQueryOptions = <TData = Awaited<ReturnType<typeof listStops>>, TError = ErrorType<InvalidTripRequestResponse | void>>(tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStops>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListStopsQueryKey(tripId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listStops>>> = ({ signal }) => listStops(tripId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: tripId !== null && tripId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listStops>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListStopsQueryResult = NonNullable<Awaited<ReturnType<typeof listStops>>>
+export type ListStopsQueryError = ErrorType<InvalidTripRequestResponse | void>
+
+
+export function useListStops<TData = Awaited<ReturnType<typeof listStops>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStops>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listStops>>,
+          TError,
+          Awaited<ReturnType<typeof listStops>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListStops<TData = Awaited<ReturnType<typeof listStops>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStops>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listStops>>,
+          TError,
+          Awaited<ReturnType<typeof listStops>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListStops<TData = Awaited<ReturnType<typeof listStops>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStops>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List owned trip stops in itinerary order
+ */
+
+export function useListStops<TData = Awaited<ReturnType<typeof listStops>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStops>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListStopsQueryOptions(tripId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateStopUrl = (tripId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops`
+}
+
+/**
+ * @summary Insert a stop, appending if sortOrder is omitted
+ */
+export const createStop = async (tripId: string,
+    stopInput: StopInput, options?: Parameters<typeof customFetch>[1]): Promise<Stop> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<Stop>(getCreateStopUrl(tripId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(stopInput)
+  }
+);}
+
+
+
+
+
+export const getCreateStopMutationKey = () => ['createStop'] as const;
+
+export const getCreateStopMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStop>>, TError,CreateStopMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createStop>>, TError,CreateStopMutationVariables, TContext> => {
+
+const mutationKey = getCreateStopMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createStop>>, CreateStopMutationVariables> = (props) => {
+          const {tripId,data} = props ?? {};
+
+          return  createStop(tripId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateStopMutationResult = NonNullable<Awaited<ReturnType<typeof createStop>>>
+    export type CreateStopMutationBody = BodyType<StopInput>
+    export type CreateStopMutationError = ErrorType<InvalidTripRequestResponse | void>
+    export type CreateStopMutationVariables = {tripId: string;data: BodyType<StopInput>}
+
+    /**
+ * @summary Insert a stop, appending if sortOrder is omitted
+ */
+export const useCreateStop = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStop>>, TError,CreateStopMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createStop>>,
+        TError,
+        CreateStopMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateStopMutationOptions(options), queryClient);
+    }
+
+export const getReorderStopsUrl = (tripId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops/order`
+}
+
+/**
+ * @summary Atomically replace itinerary order with an exact permutation of current stop IDs
+ */
+export const reorderStops = async (tripId: string,
+    stopOrderInput: StopOrderInput, options?: Parameters<typeof customFetch>[1]): Promise<StopListResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<StopListResponse>(getReorderStopsUrl(tripId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(stopOrderInput)
+  }
+);}
+
+
+
+
+
+export const getReorderStopsMutationKey = () => ['reorderStops'] as const;
+
+export const getReorderStopsMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderStops>>, TError,ReorderStopsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof reorderStops>>, TError,ReorderStopsMutationVariables, TContext> => {
+
+const mutationKey = getReorderStopsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reorderStops>>, ReorderStopsMutationVariables> = (props) => {
+          const {tripId,data} = props ?? {};
+
+          return  reorderStops(tripId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReorderStopsMutationResult = NonNullable<Awaited<ReturnType<typeof reorderStops>>>
+    export type ReorderStopsMutationBody = BodyType<StopOrderInput>
+    export type ReorderStopsMutationError = ErrorType<InvalidTripRequestResponse | void>
+    export type ReorderStopsMutationVariables = {tripId: string;data: BodyType<StopOrderInput>}
+
+    /**
+ * @summary Atomically replace itinerary order with an exact permutation of current stop IDs
+ */
+export const useReorderStops = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderStops>>, TError,ReorderStopsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof reorderStops>>,
+        TError,
+        ReorderStopsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReorderStopsMutationOptions(options), queryClient);
+    }
+
+export const getGetStopUrl = (tripId: string,
+    stopId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops/${stopId}`
+}
+
+/**
+ * @summary Get one stop in an owned trip
+ */
+export const getStop = async (tripId: string,
+    stopId: string, options?: Parameters<typeof customFetch>[1]): Promise<OneStopResponse> => {
+
+  return customFetch<OneStopResponse>(getGetStopUrl(tripId,stopId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetStopQueryKey = (tripId: string,
+    stopId: string,) => {
+    return [
+    `/api/trips/${tripId}/stops/${stopId}`
+    ] as const;
+    }
+
+
+export const getGetStopQueryOptions = <TData = Awaited<ReturnType<typeof getStop>>, TError = ErrorType<InvalidTripRequestResponse | void>>(tripId: string,
+    stopId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStop>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStopQueryKey(tripId,stopId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStop>>> = ({ signal }) => getStop(tripId,stopId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: tripId !== null && tripId !== undefined && stopId !== null && stopId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStop>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetStopQueryResult = NonNullable<Awaited<ReturnType<typeof getStop>>>
+export type GetStopQueryError = ErrorType<InvalidTripRequestResponse | void>
+
+
+export function useGetStop<TData = Awaited<ReturnType<typeof getStop>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string,
+    stopId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStop>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStop>>,
+          TError,
+          Awaited<ReturnType<typeof getStop>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStop<TData = Awaited<ReturnType<typeof getStop>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string,
+    stopId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStop>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStop>>,
+          TError,
+          Awaited<ReturnType<typeof getStop>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStop<TData = Awaited<ReturnType<typeof getStop>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string,
+    stopId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStop>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get one stop in an owned trip
+ */
+
+export function useGetStop<TData = Awaited<ReturnType<typeof getStop>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string,
+    stopId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStop>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetStopQueryOptions(tripId,stopId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateStopUrl = (tripId: string,
+    stopId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops/${stopId}`
+}
+
+/**
+ * @summary Replace editable stop fields and optionally move its position
+ */
+export const updateStop = async (tripId: string,
+    stopId: string,
+    stopInput: StopInput, options?: Parameters<typeof customFetch>[1]): Promise<OneStopResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<OneStopResponse>(getUpdateStopUrl(tripId,stopId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(stopInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateStopMutationKey = () => ['updateStop'] as const;
+
+export const getUpdateStopMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStop>>, TError,UpdateStopMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateStop>>, TError,UpdateStopMutationVariables, TContext> => {
+
+const mutationKey = getUpdateStopMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateStop>>, UpdateStopMutationVariables> = (props) => {
+          const {tripId,stopId,data} = props ?? {};
+
+          return  updateStop(tripId,stopId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateStopMutationResult = NonNullable<Awaited<ReturnType<typeof updateStop>>>
+    export type UpdateStopMutationBody = BodyType<StopInput>
+    export type UpdateStopMutationError = ErrorType<InvalidTripRequestResponse | void>
+    export type UpdateStopMutationVariables = {tripId: string;stopId: string;data: BodyType<StopInput>}
+
+    /**
+ * @summary Replace editable stop fields and optionally move its position
+ */
+export const useUpdateStop = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStop>>, TError,UpdateStopMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateStop>>,
+        TError,
+        UpdateStopMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateStopMutationOptions(options), queryClient);
+    }
+
+export const getDeleteStopUrl = (tripId: string,
+    stopId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/stops/${stopId}`
+}
+
+/**
+ * @summary Delete a stop and compact its itinerary positions
+ */
+export const deleteStop = async (tripId: string,
+    stopId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteStopUrl(tripId,stopId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteStopMutationKey = () => ['deleteStop'] as const;
+
+export const getDeleteStopMutationOptions = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStop>>, TError,DeleteStopMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteStop>>, TError,DeleteStopMutationVariables, TContext> => {
+
+const mutationKey = getDeleteStopMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteStop>>, DeleteStopMutationVariables> = (props) => {
+          const {tripId,stopId} = props ?? {};
+
+          return  deleteStop(tripId,stopId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteStopMutationResult = NonNullable<Awaited<ReturnType<typeof deleteStop>>>
+
+    export type DeleteStopMutationError = ErrorType<InvalidTripRequestResponse | void>
+    export type DeleteStopMutationVariables = {tripId: string;stopId: string}
+
+    /**
+ * @summary Delete a stop and compact its itinerary positions
+ */
+export const useDeleteStop = <TError = ErrorType<InvalidTripRequestResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStop>>, TError,DeleteStopMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteStop>>,
+        TError,
+        DeleteStopMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteStopMutationOptions(options), queryClient);
+    }
 
 export const getListTripsUrl = () => {
 
