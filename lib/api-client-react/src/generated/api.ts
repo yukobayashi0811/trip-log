@@ -34,7 +34,8 @@ import type {
   StopListResponse,
   StopOrderInput,
   Trip,
-  TripInput
+  TripInput,
+  TripRouting
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -63,6 +64,107 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGetTripRoutesUrl = (tripId: string,) => {
+
+
+
+
+  return `/api/trips/${tripId}/routes`
+}
+
+/**
+ * @summary Estimate road geometry from the owned saved itinerary; provider failures do not alter stops
+ */
+export const getTripRoutes = async (tripId: string, options?: Parameters<typeof customFetch>[1]): Promise<TripRouting> => {
+
+  return customFetch<TripRouting>(getGetTripRoutesUrl(tripId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTripRoutesQueryKey = (tripId: string,) => {
+    return [
+    `/api/trips/${tripId}/routes`
+    ] as const;
+    }
+
+
+export const getGetTripRoutesQueryOptions = <TData = Awaited<ReturnType<typeof getTripRoutes>>, TError = ErrorType<InvalidTripRequestResponse | void>>(tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTripRoutes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTripRoutesQueryKey(tripId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTripRoutes>>> = ({ signal }) => getTripRoutes(tripId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: tripId !== null && tripId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTripRoutes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTripRoutesQueryResult = NonNullable<Awaited<ReturnType<typeof getTripRoutes>>>
+export type GetTripRoutesQueryError = ErrorType<InvalidTripRequestResponse | void>
+
+
+export function useGetTripRoutes<TData = Awaited<ReturnType<typeof getTripRoutes>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTripRoutes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTripRoutes>>,
+          TError,
+          Awaited<ReturnType<typeof getTripRoutes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTripRoutes<TData = Awaited<ReturnType<typeof getTripRoutes>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTripRoutes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTripRoutes>>,
+          TError,
+          Awaited<ReturnType<typeof getTripRoutes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTripRoutes<TData = Awaited<ReturnType<typeof getTripRoutes>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTripRoutes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Estimate road geometry from the owned saved itinerary; provider failures do not alter stops
+ */
+
+export function useGetTripRoutes<TData = Awaited<ReturnType<typeof getTripRoutes>>, TError = ErrorType<InvalidTripRequestResponse | void>>(
+ tripId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTripRoutes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTripRoutesQueryOptions(tripId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getListStopsUrl = (tripId: string,) => {
 

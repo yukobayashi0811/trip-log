@@ -1,0 +1,82 @@
+
+> workspace@0.0.0 typecheck /home/runner/workspace
+> pnpm run typecheck:libs && pnpm -r --filter "./artifacts/**" --filter "./scripts" --if-present run typecheck
+
+
+> workspace@0.0.0 typecheck:libs /home/runner/workspace
+> tsc --build
+
+Scope: 4 of 9 workspace projects
+artifacts/api-server typecheck$ tsc -p tsconfig.json --noEmit
+artifacts/mockup-sandbox typecheck$ tsc -p tsconfig.json --noEmit
+artifacts/trip-log typecheck$ tsc -p tsconfig.json --noEmit
+scripts typecheck$ tsc -p tsconfig.json --noEmit
+scripts typecheck: Done
+artifacts/mockup-sandbox typecheck: Done
+artifacts/api-server typecheck: Done
+artifacts/trip-log typecheck: Done
+
+> @workspace/trip-log@0.0.0 build /home/runner/workspace/artifacts/trip-log
+> vite build --config vite.config.ts
+
+vite v7.3.7 building client environment for production...
+transforming...
+src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+✓ 1967 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/public/index.html                      1.39 kB │ gzip:   0.58 kB
+dist/public/assets/trip-map-CIGW-MKW.css   15.61 kB │ gzip:   6.46 kB
+dist/public/assets/index-z420xriP.css     116.26 kB │ gzip:  19.23 kB
+dist/public/assets/trip-map-d27k_Yi6.js   192.41 kB │ gzip:  57.49 kB
+dist/public/assets/index-Du9B7lek.js      571.95 kB │ gzip: 171.32 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 4.92s
+
+> @workspace/api-server@0.0.0 build /home/runner/workspace/artifacts/api-server
+> node ./build.mjs
+
+
+  dist/index.mjs                       2.7mb ⚠️
+  dist/pino-worker.mjs               153.5kb
+  dist/pino-file.mjs                 142.1kb
+  dist/pino-pretty.mjs               124.7kb
+  dist/thread-stream-worker.mjs        7.4kb
+  dist/index.mjs.map                   5.0mb
+  dist/pino-worker.mjs.map           256.9kb
+  dist/pino-file.mjs.map             229.0kb
+  dist/pino-pretty.mjs.map           227.8kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 338ms
+
+Final Leaflet class/accessible-label correction:
+
+> @workspace/trip-log@0.0.0 typecheck /home/runner/workspace/artifacts/trip-log
+> tsc -p tsconfig.json --noEmit
+
+
+> @workspace/trip-log@0.0.0 build /home/runner/workspace/artifacts/trip-log
+> vite build --config vite.config.ts
+
+vite v7.3.7 building client environment for production...
+transforming...
+src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+✓ 1967 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/public/index.html                      1.39 kB │ gzip:   0.58 kB
+dist/public/assets/trip-map-CIGW-MKW.css   15.61 kB │ gzip:   6.46 kB
+dist/public/assets/index-z420xriP.css     116.26 kB │ gzip:  19.23 kB
+dist/public/assets/trip-map-C60Eg4kY.js   192.55 kB │ gzip:  57.53 kB
+dist/public/assets/index-BZctXThU.js      571.95 kB │ gzip: 171.32 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.42s

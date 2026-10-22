@@ -12,6 +12,7 @@ import { AppShell } from '@/components/app-shell';
 import { ErrorPanel, TripNotFound } from '@/components/trips/trip-states';
 import { StopEditor } from '@/components/map/stop-editor';
 import TripMap from '@/components/map/trip-map';
+import { RoadRoutingStatus, useRoadRoutes } from '@/components/map/road-routing';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { apiErrorInfo, errorStatus, formatDate, formatRange } from '@/lib/trips';
 import { usePageMeta } from '@/lib/page-meta';
@@ -59,6 +60,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
   const del = useDeleteStop();
   const reorder = useReorderStops();
   const busy = create.isPending || update.isPending || del.isPending || reorder.isPending;
+  const roadRouting = useRoadRoutes(tripId, userId, stops, validTrip && stopsQ.isSuccess && !stopsQ.isFetching && !busy);
 
   const selectedValid = !!selectedId && UUID_RE.test(selectedId) && validTrip;
   const stopQ = useGetStop(tripId, selectedId ?? '', {
@@ -365,7 +367,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
 
       <div className={`mt-6 grid gap-4 ${panelOpen ? 'lg:grid-cols-[minmax(0,1fr)_420px]' : ''}`}>
         <div className={`trip-map relative overflow-hidden rounded-[1.5rem] border border-card-border bg-muted ${panelOpen ? 'h-[52dvh]' : 'h-[72dvh]'} min-h-[300px] lg:h-[calc(100dvh-15rem)] lg:min-h-[480px]`}>
-          <TripMap tripKey={tripId} stops={stops} selectedId={selectedId} draft={draft}
+          <TripMap tripKey={tripId} stops={stops} selectedId={selectedId} draft={draft} roadRoutes={roadRouting.data}
             onSelect={selectStop} onMapClick={onMapClick} onTileError={() => setTileError(true)} onTileLoad={() => tileError && setTileError(false)} />
           <div className="pointer-events-none absolute inset-x-3 top-3 z-[1000] flex flex-col items-end gap-2">
             {tileError && <p role="status" className="pointer-events-auto max-w-sm rounded-xl border border-destructive/30 bg-card/95 px-3 py-2 text-xs text-destructive shadow-sm" data-testid="status-tile-error">Some map tiles didn't load. Your stops are safe; check your connection, then pan or zoom to retry.</p>}
@@ -399,7 +401,7 @@ function MapWorkspace({ userId, tripId }: { userId: string; tripId: string }) {
           {panelOpen && <div id="itinerary-body" className="mt-3 lg:max-h-[calc(100dvh-18rem)] lg:overflow-y-auto lg:pr-1">{panelBody}</div>}
         </aside>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">Pins mark places only. Lines between stops aren't drawn, since the real roads and flight paths aren't known.</p>
+      {validTrip && <RoadRoutingStatus routing={roadRouting} />}
 
       <AlertDialog open={!!confirm} onOpenChange={(o) => { if (!o) setConfirm(null); }}>
         <AlertDialogContent>

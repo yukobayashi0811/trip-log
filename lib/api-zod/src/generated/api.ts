@@ -9,6 +9,39 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Estimate road geometry from the owned saved itinerary; provider failures do not alter stops
+ */
+export const GetTripRoutesParams = zod.object({
+  "tripId": zod.coerce.string().uuid()
+})
+
+export const getTripRoutesResponseSegmentsItemCoordinatesItemMin = 2;
+export const getTripRoutesResponseSegmentsItemCoordinatesItemMax = 2;
+
+export const getTripRoutesResponseSegmentsItemDistanceMetersMin = 0;
+
+export const getTripRoutesResponseSegmentsItemDurationSecondsMin = 0;
+
+export const getTripRoutesResponseSegmentsItemRetryAfterSecondsMin = 0;
+
+
+
+export const GetTripRoutesResponse = zod.object({
+  "tripId": zod.string().uuid(),
+  "stopRevision": zod.string(),
+  "segments": zod.array(zod.object({
+  "stopIds": zod.array(zod.string().uuid()),
+  "status": zod.enum(['ready', 'missing_key', 'unreachable', 'timeout', 'rate_limited', 'provider_error', 'invalid_response', 'provider_limit', 'busy']),
+  "message": zod.string(),
+  "coordinates": zod.array(zod.array(zod.number()).min(getTripRoutesResponseSegmentsItemCoordinatesItemMin).max(getTripRoutesResponseSegmentsItemCoordinatesItemMax)).describe('Validated GeoJSON longitude-latitude pairs, not Leaflet latitude-longitude'),
+  "distanceMeters": zod.number().min(getTripRoutesResponseSegmentsItemDistanceMetersMin).optional(),
+  "durationSeconds": zod.number().min(getTripRoutesResponseSegmentsItemDurationSecondsMin).optional(),
+  "retryAfterSeconds": zod.number().int().min(getTripRoutesResponseSegmentsItemRetryAfterSecondsMin).optional()
+}))
+})
+
+
+/**
  * @summary List owned trip stops in itinerary order
  */
 export const ListStopsParams = zod.object({

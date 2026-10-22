@@ -5,6 +5,45 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type DrivingRouteStatus = typeof DrivingRouteStatus[keyof typeof DrivingRouteStatus];
+
+
+export const DrivingRouteStatus = {
+  ready: 'ready',
+  missing_key: 'missing_key',
+  unreachable: 'unreachable',
+  timeout: 'timeout',
+  rate_limited: 'rate_limited',
+  provider_error: 'provider_error',
+  invalid_response: 'invalid_response',
+  provider_limit: 'provider_limit',
+  busy: 'busy',
+} as const;
+
+export interface DrivingRoute {
+  stopIds: string[];
+  status: DrivingRouteStatus;
+  message: string;
+  /**
+     * Validated GeoJSON longitude-latitude pairs, not Leaflet latitude-longitude
+     * @items.minItems 2
+     * @items.maxItems 2
+     */
+  coordinates: number[][];
+  /** @minimum 0 */
+  distanceMeters?: number;
+  /** @minimum 0 */
+  durationSeconds?: number;
+  /** @minimum 0 */
+  retryAfterSeconds?: number;
+}
+
+export interface TripRouting {
+  tripId: string;
+  stopRevision: string;
+  segments: DrivingRoute[];
+}
+
 export interface StopOrderInput {
   stopIds: string[];
 }
