@@ -1,0 +1,68 @@
+PASS Exact PR app renders the signed-out desktop landing page
+Attention: Clerk collects telemetry data from its SDKs when connected to development instances.
+The data collected is used to inform Clerk's product roadmap.
+To learn more, including how to opt-out from the telemetry program, visit: https://clerk.com/docs/telemetry.
+
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS Authenticated browser API creates an isolated synthetic trip
+PASS All Trips initially shows unstarred state
+PASS Desktop All Trips star click saves successfully
+PASS Starred Trips lists the saved trip
+PASS Trip Detail and reload preserve the saved state
+PASS Star control receives keyboard focus
+PASS Keyboard Enter removes a star
+PASS Controlled 500 shows failure without falsely marking starred
+PASS Retry after failed star saves correctly
+PASS Controlled 500 does not falsely remove the saved star
+PASS Failed unstar preserves the actual database favorite
+PASS Retry after failed unstar removes it correctly
+PASS Mobile All Trips has no horizontal overflow
+PASS Mobile Trip Detail has no horizontal overflow
+PASS Mobile Detail star control has a visible 44-pixel touch target
+PASS Mobile Starred Trips has no horizontal overflow
+PASS Mobile touch star/unstar, detail, and starred list agree
+PASS Mobile reload preserves starred-trip persistence
+PASS Failed Starred Trips request provides an actionable retry
+PASS Starred Trips retry restores saved data
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS A second genuinely Clerk-authenticated user cannot list, read, star, or unstar the owner trip
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS Sign-out/sign-in preserves owner star and does not reuse the other user cache
+PASS Synthetic trip cleanup succeeds through authenticated owner API
+PASS Owner API creates isolated search fixture: Kyoto Spring
+PASS Owner API creates isolated search fixture: Osaka Spring
+PASS Owner API creates isolated search fixture: Paris Autumn
+PASS Owner API creates isolated search fixture: London Winter
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS A second authenticated account cannot list the owner search fixtures
+PASS Another account does not receive search options derived from the owner trips
+PASS Clerk-issued ticket completed a real Development sign-in
+PASS All Trips shows all four owner-scoped search fixtures newest first
+PASS Repeated region names share one region option
+PASS Year options are derived from start dates in descending date-only order
+PASS Search, region, year, and sort controls have visible associated labels
+PASS Keyboard Tab moves from search into the labelled region filter
+PASS Trimmed case-insensitive partial title search returns both Spring trips
+PASS Matching result count reflects title search
+PASS No-match state and zero count are distinct from no-trips-created state
+PASS Empty-state clear restores all matching trips
+PASS Region filter matches the deduplicated Japan region
+PASS Region, year, and title filters combine
+PASS A cross-year trip is filtered using its date-only start year
+PASS Year filter includes trips starting in 2024 regardless of end year
+PASS Oldest-first sort is stable for equal start dates
+PASS Clear-all control appears for non-default sort
+PASS Clear all restores default newest-first order
+PASS Clear all resets search and sort controls
+PASS Title query finds the trip before starring
+PASS Starred-only filter shows a newly starred trip
+PASS Starred-only results react to unstar and show no match
+PASS Turning off starred-only restores the title match
+PASS Clear all returns the full owner trip list
+PASS Mobile All Trips retains the complete search result set
+PASS Mobile search and filter controls have no horizontal overflow
+PASS Mobile title search remains usable
+PASS Owner API removes isolated browser fixture: Kyoto Spring
+PASS Owner API removes isolated browser fixture: Osaka Spring
+PASS Owner API removes isolated browser fixture: Paris Autumn
+PASS Owner API removes isolated browser fixture: London Winter

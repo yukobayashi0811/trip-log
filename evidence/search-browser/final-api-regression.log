@@ -1,0 +1,15 @@
+
+> @workspace/api-server@0.0.0 test /home/runner/workspace/generated-artifacts/feature9-worktree/artifacts/api-server
+> vitest run
+
+
+ RUN  v5.0.5 /home/runner/workspace/generated-artifacts/feature9-worktree/artifacts/api-server
+
+
+ Test Files  12 passed (12)
+      Tests  248 passed (248)
+   Start at  21:04:01
+   Duration  8.23s (tests 54%, import 43%, transform 2%)
+
+    Isolate  12 workers spawned · ~216ms startup each (spawn + environment, per file)
+             at least ~647ms faster with isolate: false — reuses workers across files instead of one per file

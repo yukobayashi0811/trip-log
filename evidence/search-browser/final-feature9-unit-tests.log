@@ -1,0 +1,21 @@
+
+> @workspace/trip-log@0.0.0 test:search /home/runner/workspace/generated-artifacts/feature9-worktree/artifacts/trip-log
+> node --test src/lib/trip-search.test.mjs
+
+▶ All Trips search, filters, and date-only sorting
+  ✔ trims queries and matches title substrings without case sensitivity (1.041959ms)
+  ✔ treats a blank query as empty and returns no trips for a non-match (0.192549ms)
+  ✔ derives sorted unique region options while ignoring missing and blank values (0.293368ms)
+  ✔ uses the date-only start year, including trips starting at year boundaries (0.313945ms)
+  ✔ filters starred trips and reacts when the starred ID set changes (0.170237ms)
+  ✔ sorts newest/oldest by date and breaks equal-date ties by trip ID (0.114703ms)
+  ✔ combines all filters and restores the full newest-first list after reset (0.145723ms)
+✔ All Trips search, filters, and date-only sorting (3.070809ms)
+ℹ tests 7
+ℹ suites 1
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.933465
