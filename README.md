@@ -51,9 +51,14 @@ See [authentication verification](docs/auth-verification.md) for actual results
 and [database verification](docs/database-verification.md) for the database tests
 and the historical database checkpoint. See [Trip CRUD verification](docs/trip-crud-verification.md)
 and [actual ownership regression evidence](evidence/tests/README.md) for Feature 3.
-The full backend suite passes **46 tests** across authentication, schema, and
-trip API integration. The signed-in CRUD browser journey also passed on desktop
-and mobile.
+The full backend suite passes **110 tests** across authentication, schema,
+trip API integration, and shared/HTTP validation. The Feature 3 CRUD browser
+journey passed on desktop/mobile; the focused Feature 4 validation browser
+journey passed on desktop.
+Feature 4 shares one validation schema between browser and API, adds consistent
+inline messages and an accessible linked error summary, and keeps intentional
+whitespace in nonblank notes. See [validation verification](docs/validation-verification.md)
+for the improvements over Feature 3, boundaries, and current results.
 Database fixtures roll back; API integration tests remove their own synthetic
 accounts and dependent records. No tests invent genuine travel history.
 
@@ -98,9 +103,14 @@ All routes require a verified Clerk session and resolve its internal UUID.
 Input: `title`, `startDate`, `endDate`, optional `destinationRegion`, `tripType`,
 `notes`. PUT is a full form replacement, not a partial patch: title/dates are
 required, and omitted/empty/null optional fields clear their old values.
-Calendar dates remain `YYYY-MM-DD` strings. Text is trimmed; nonblank title,
+Calendar dates remain `YYYY-MM-DD` strings. Single-line text is trimmed;
+nonblank notes keep their spacing and line breaks; blank optional values become
+null. Nonblank title,
 real dates, end ≥ start, and bounded field lengths are enforced server-side.
-Unknown properties (including owner/id/timestamps) are rejected.
+Unknown properties (including owner/id/timestamps) and embedded NUL characters
+are rejected. Invalid fields return actionable `fields` messages; invalid
+root objects/unknown fields use `formErrors`. JSON parse errors return 400,
+requests over 100 KiB return 413, and unsupported media/encoding returns 415.
 
 ## Review and publishing
 
@@ -108,8 +118,9 @@ All changes use Issues, feature branches, prompt logs, tests, and reviewed PRs.
 Only the owner merges. After each merged feature, once deployable, review costs,
 publish through the owner-controlled Replit Publish flow, and verify the live
 feature before starting the next one. Development and production Clerk users
-and databases are separate. Authentication and the five-table Feature 2 schema
-are published at https://trip-log.replit.app. Feature 3 is development-only
+and databases are separate. Authentication, the five-table schema, and Feature 3
+Trip CRUD are published at https://trip-log.replit.app; the owner confirmed the
+authenticated production CRUD checks passed. Feature 4 is development-only
 until its PR is personally merged and the owner republishes.
 Replit applies managed production schema changes through Publish; no application
 startup DDL or production migration script is used.

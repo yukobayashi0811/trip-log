@@ -57,6 +57,10 @@ const errorHandler: ErrorRequestHandler = (_err, req, res, _next) => {
     res.status(413).json({ error: "The request is too large." });
     return;
   }
+  if (_err?.type === "charset.unsupported" || _err?.type === "encoding.unsupported") {
+    res.status(415).json({ error: "Send JSON using UTF-8 without an unsupported Content-Encoding header." });
+    return;
+  }
   req.log.warn("Request could not be completed");
   res.status(500).json({ error: "Something went wrong. Please try again." });
 };

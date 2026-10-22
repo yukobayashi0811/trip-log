@@ -46,6 +46,7 @@ export default function TripEditPage({ userId }: { userId: string }) {
               setLocation(`/trips/${saved.id}`);
             },
           })}
+          onEdit={() => update.reset()}
         />
       </div>
     </>
