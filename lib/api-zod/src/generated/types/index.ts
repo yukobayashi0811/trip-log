@@ -7,6 +7,8 @@
  */
 
 export * from './currentUser';
+export * from './drivingRoute';
+export * from './drivingRouteStatus';
 export * from './healthStatus';
 export * from './invalidTripRequestResponse';
 export * from './oneStopResponse';
@@ -20,3 +22,4 @@ export * from './trip';
 export * from './tripInput';
 export * from './tripRequestError';
 export * from './tripRequestErrorFields';
+export * from './tripRouting';

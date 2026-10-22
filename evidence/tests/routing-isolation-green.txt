@@ -1,0 +1,9 @@
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 7 skipped (8)
+   Start at  05:18:49
+   Duration  1.04s (import 66%, tests 24%, transform 9%)
+

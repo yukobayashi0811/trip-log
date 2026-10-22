@@ -1,0 +1,39 @@
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+ ❯ src/tests/routing-api.test.ts (8 tests | 1 failed | 7 skipped) 223ms
+   ❯ owned saved-itinerary routing HTTP/PostgreSQL integration (8)
+     × User B cannot obtain User A routes even with a warmed cache and known trip UUID 215ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tests/routing-api.test.ts > owned saved-itinerary routing HTTP/PostgreSQL integration > User B cannot obtain User A routes even with a warmed cache and known trip UUID
+AssertionError: expected 200 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 200
+
+ ❯ src/tests/routing-api.test.ts:71:27
+     69|     await signIn();
+     70|     const denied = await request(app).get(path());
+     71|     expect(denied.status).toBe(404);
+       |                           ^
+     72|     expect(JSON.stringify(denied.body)).not.toContain("stopRevision");
+     73|     expect(provider.fetch).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  05:18:36
+   Duration  1.20s (import 70%, tests 21%, transform 9%)
+
+undefined
+/home/runner/workspace/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/tests/routing-api.test.ts -t User B cannot
+
+Actual Vitest exit code: 1

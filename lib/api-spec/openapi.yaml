@@ -11,6 +11,22 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /trips/{tripId}/routes:
+    parameters:
+      - { $ref: "#/components/parameters/TripId" }
+    get:
+      operationId: getTripRoutes
+      summary: Estimate road geometry from the owned saved itinerary; provider failures do not alter stops
+      security: [{ sessionCookie: [] }]
+      responses:
+        "200":
+          description: Routing result including per-section availability
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TripRouting" }
+        "400": { $ref: "#/components/responses/InvalidTripRequest" }
+        "401": { description: Sign-in required }
+        "404": { description: Trip not found or not owned }
   /trips/{tripId}/stops:
     parameters:
       - { $ref: "#/components/parameters/TripId" }
@@ -251,6 +267,37 @@ components:
       in: cookie
       name: __session
   schemas:
+    TripRouting:
+      type: object
+      required: [tripId, stopRevision, segments]
+      properties:
+        tripId: { type: string, format: uuid }
+        stopRevision: { type: string }
+        segments:
+          type: array
+          items: { $ref: "#/components/schemas/DrivingRoute" }
+    DrivingRoute:
+      type: object
+      required: [stopIds, status, message, coordinates]
+      properties:
+        stopIds:
+          type: array
+          items: { type: string, format: uuid }
+        status:
+          type: string
+          enum: [ready, missing_key, unreachable, timeout, rate_limited, provider_error, invalid_response, provider_limit, busy]
+        message: { type: string }
+        coordinates:
+          description: Validated GeoJSON longitude-latitude pairs, not Leaflet latitude-longitude
+          type: array
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items: { type: number }
+        distanceMeters: { type: number, minimum: 0 }
+        durationSeconds: { type: number, minimum: 0 }
+        retryAfterSeconds: { type: integer, minimum: 0 }
     StopOrderInput:
       type: object
       additionalProperties: false

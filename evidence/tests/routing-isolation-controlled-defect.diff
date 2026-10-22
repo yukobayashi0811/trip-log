@@ -1,0 +1,11 @@
+--- a/stop-store.ts
++++ b/stop-store.ts
+@@ -17,7 +17,7 @@
+ async function inOwnedTrip<T>(userId: string, tripId: string, action: (tx: Transaction) => Promise<T>) {
+   return db.transaction(async (tx) => {
+     const [parent] = await tx.select({ id: trips.id }).from(trips)
+-      .where(and(eq(trips.id, tripId), eq(trips.userId, userId))).for("update");
++      .where(eq(trips.id, tripId)).for("update");
+     if (!parent) throw new StopRequestError(404, "Trip not found.");
+     return action(tx);
+   });

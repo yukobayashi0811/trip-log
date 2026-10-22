@@ -24,12 +24,23 @@ stop creation/editing/deletion/reordering. The ordered itinerary and map stay
 synchronized; mobile users can collapse the itinerary. Full validation,
 parent-trip ownership and transactional ordering use the existing stops schema.
 See [map verification and evidence](docs/map-verification.md).
-Road routes, accommodations, favorites, search and dashboard remain unimplemented.
+
+Feature 6 adds server-owned **Estimated Driving Route** geometry through ordered
+Driving stops, including intermediate and recorded return points. Flying/Other
+transitions have no lines. Transient deduplication, validation, free-plan request
+budgets, cooldowns and failure states preserve saved stops when ORS is unavailable.
+The owner added server-only `ORS_API_KEY`; existence is confirmed in both
+environments. Real ORS browser checks passed, including mixed-mode sections and
+a nonzero recorded A→B→A return route. Provider/browser verification details and
+the tooltip capture limitation are documented below.
+See [routing verification, limits, setup and evidence](docs/routing-verification.md).
+Accommodations, favorites, journal search and dashboard remain unimplemented.
 
 ## Stack and setup
 
 Node.js 24, pnpm 10, React/TypeScript/Vite, Express 5, Replit-managed Clerk,
-PostgreSQL/Drizzle, Leaflet/React Leaflet with OpenStreetMap tiles, Vitest.
+PostgreSQL/Drizzle, Leaflet/React Leaflet with OpenStreetMap tiles,
+openrouteservice Standard Free (server-side native fetch), Vitest.
 
 1. Install dependencies: `pnpm install --frozen-lockfile`.
 2. In Replit, provision managed Clerk through the Auth integration and use the
@@ -61,8 +72,8 @@ See [authentication verification](docs/auth-verification.md) for actual results
 and [database verification](docs/database-verification.md) for the database tests
 and the historical database checkpoint. See [Trip CRUD verification](docs/trip-crud-verification.md)
 and [actual ownership regression evidence](evidence/tests/README.md) for Feature 3.
-The full backend suite passes **178 tests** across authentication, schema,
-trip/stop API integration, and shared/HTTP validation. The Feature 3 CRUD browser
+The full backend suite passes **225 tests** across authentication, schema,
+trip/stop/routing API integration, provider safety and shared/HTTP validation. The Feature 3 CRUD browser
 journey passed on desktop/mobile; the focused Feature 4 validation browser
 journey passed on desktop.
 Feature 5's actual desktop/mobile map-click CRUD/reorder/collapse browser
@@ -131,9 +142,10 @@ All changes use Issues, feature branches, prompt logs, tests, and reviewed PRs.
 Only the owner merges. After each merged feature, once deployable, review costs,
 publish through the owner-controlled Replit Publish flow, and verify the live
 feature before starting the next one. Development and production Clerk users
-and databases are separate. Authentication, the five-table schema, Trip CRUD
-and Feature 4 validation are published at https://trip-log.replit.app; the owner
-confirmed production validation works after republishing. Feature 5 is development-only
-until its PR is personally merged and the owner republishes.
+and databases are separate. Authentication, the five-table schema, Trip CRUD,
+validation and Feature 5 map/stops are published at https://trip-log.replit.app;
+the owner confirmed the production map/stop interactions after republishing.
+Feature 6 is development-only until personally merged and owner-republished;
+real ORS access additionally needs its server-only secret.
 Replit applies managed production schema changes through Publish; no application
 startup DDL or production migration script is used.

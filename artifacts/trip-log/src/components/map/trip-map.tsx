@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet';
-import type { Stop } from '@workspace/api-client-react';
+import type { Stop, TripRouting } from '@workspace/api-client-react';
+import RoadLines from './road-lines';
 import { formatDate } from '@/lib/trips';
 
 function pinIcon(n: number | string, selected: boolean, draft = false) {
@@ -61,6 +62,7 @@ function ClickHandler({ onClick }: { onClick: (lat: number, lng: number) => void
 }
 
 export type TripMapProps = {
+  roadRoutes?: TripRouting;
   tripKey: string;
   stops: Stop[];
   selectedId: string | null;
@@ -97,7 +99,7 @@ function StopPin({ stop, number, selected, onSelect }: {
   );
 }
 
-export default function TripMap({ tripKey, stops, selectedId, draft, onSelect, onMapClick, onTileError, onTileLoad }: TripMapProps) {
+export default function TripMap({ tripKey, stops, selectedId, draft, onSelect, onMapClick, onTileError, onTileLoad, roadRoutes }: TripMapProps) {
   const points = useMemo(() => stops.map((s) => [s.latitude, s.longitude] as [number, number]), [stops]);
   const signature = `${tripKey}|${points.map((p) => p.join(',')).join(';')}`;
   const selected = stops.find((s) => s.id === selectedId) ?? null;
@@ -117,6 +119,7 @@ export default function TripMap({ tripKey, stops, selectedId, draft, onSelect, o
       <FitBounds signature={signature} points={points} />
       <FocusSelected target={selected ? [selected.latitude, selected.longitude] : null} />
       <ClickHandler onClick={onMapClick} />
+      {roadRoutes && <RoadLines routing={roadRoutes} stops={stops} />}
       {stops.map((s, i) => <StopPin key={s.id} stop={s} number={i + 1} selected={s.id === selectedId} onSelect={onSelect} />)}
       {draft && <Marker position={draft} icon={pinIcon('+', true, true)} interactive={false} />}
     </MapContainer>
