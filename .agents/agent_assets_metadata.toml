@@ -1,0 +1,30 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "ODEun0UdLyl7TyUBJ24w5"
+uri = "file://generated-artifacts/feature8-integration-checks/desktop-starred-trips.jpg"
+type = "image"
+title = "Authenticated desktop verification"
+description = "Actual Chromium screenshot of PR #20 using an isolated synthetic Clerk Development user."
+logical_id = "51ac8c4c-ba84-43ac-9e69-7f67a324cd69"
+content_hash = "sha256:b50f69c549d512b3ab79d9817757edd21c3e8ce05e8332856ddb39d1fac762f6"
+size = 36838
+mtime_ms = 1792697849077
+storage_uri = "gcs://replit-rams-assets-kirk/rams/assets/repl:3a05b3ee-365d-4c56-900c-ac5e48dfd6f3/51ac8c4c-ba84-43ac-9e69-7f67a324cd69/0414f19a-3bd3-4b8b-90cc-7d482d8e3386"
+storage_version_token = "1792698178078372"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "OtQk85QZInNm8UtgIOS94"
+uri = "file://generated-artifacts/feature8-integration-checks/mobile-starred-trips.jpg"
+type = "image"
+title = "Authenticated mobile verification"
+description = "Actual 390×844 Chromium screenshot; star/unstar, retry, persistence, and ownership checks are documented in the verification report."
+logical_id = "0e827eb3-2a74-4938-b40a-fe9f4ced843b"
+content_hash = "sha256:4ffb90b12a791803b01a65b7aeff242a3d53649c12f360f7eb8ec81bd8f6df1a"
+size = 18538
+mtime_ms = 1792697861205
+storage_uri = "gcs://replit-rams-assets-kirk/rams/assets/repl:3a05b3ee-365d-4c56-900c-ac5e48dfd6f3/0e827eb3-2a74-4938-b40a-fe9f4ced843b/371f64f3-3eee-4ad9-afdf-767340d5deca"
+storage_version_token = "1792698178648851"
+content_type = "image/jpeg"

@@ -1,1 +1,2 @@
 - [Replit tooling precautions](replit-tooling.md) — verify Git checkout boundaries before pushing; artifact-router is a launcher, even with --help.
+- [Parallel verification](parallel-verification.md) — Agent manages Git handoffs; preserve other task work; temporary listeners can auto-edit port mappings.
