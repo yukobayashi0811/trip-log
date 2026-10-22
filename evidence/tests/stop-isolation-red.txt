@@ -1,0 +1,42 @@
+UTC: 2026-10-22T03:38:53Z
+Controlled defect: parent owner predicate removed ONLY for this targeted test.
+Command: LOG_LEVEL=error pnpm --filter @workspace/api-server exec vitest run src/tests/stops.test.ts -t 'User B cannot'
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+ ❯ src/tests/stops.test.ts (33 tests | 1 failed | 32 skipped) 220ms
+   ❯ owned trip stop CRUD and atomic ordering on real PostgreSQL (33)
+     × User B cannot access or change User A stops, even with known trip and stop UUIDs 207ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tests/stops.test.ts > owned trip stop CRUD and atomic ordering on real PostgreSQL > User B cannot access or change User A stops, even with known trip and stop UUIDs
+AssertionError: expected 200 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 200
+
+ ❯ src/tests/stops.test.ts:96:68
+     94|     // Sequential requests keep the external mock identity stable and …
+     95|     // the first precise denial failure in the controlled red evidence.
+     96|     for (const attempt of attempts) expect((await attempt).status).toB…
+       |                                                                    ^
+     97|     for (const method of ["get", "put", "delete"] as const) {
+     98|       const call = request(app)[method](`/api/trips/${bTrip}/stops/${a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 32 skipped (33)
+   Start at  03:38:55
+   Duration  2.71s (import 75%, transform 16%, tests 9%)
+
+undefined
+/home/runner/workspace/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/tests/stops.test.ts -t User B cannot
+
+Actual exit status: 1

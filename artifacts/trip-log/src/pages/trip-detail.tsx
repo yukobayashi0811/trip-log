@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'wouter';
-import { ArrowLeft, CalendarRange, Compass, MapPin, Pencil } from 'lucide-react';
+import { ArrowLeft, CalendarRange, Compass, Map as MapIcon, MapPin, Pencil } from 'lucide-react';
 import { useGetTrip, getGetTripQueryKey } from '@workspace/api-client-react';
 import { AppShell } from '@/components/app-shell';
 import { DeleteTripDialog } from '@/components/trips/delete-trip-dialog';
@@ -40,6 +40,7 @@ export default function TripDetailPage({ userId }: { userId: string }) {
             <h1 className="font-display mt-2 break-words text-4xl leading-tight md:text-5xl" data-testid="text-trip-title">{trip.title}</h1>
           </div>
           <div className="flex items-center gap-2">
+            <Link href={`/trips/${trip.id}/map`} className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" data-testid="link-trip-map"><MapIcon className="h-4 w-4" /> Map</Link>
             <Link href={`/trips/${trip.id}/edit`} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-card" data-testid="link-edit-trip"><Pencil className="h-4 w-4" /> Edit</Link>
             <DeleteTripDialog tripId={trip.id} title={trip.title} />
           </div>

@@ -1,0 +1,62 @@
+UTC: 2026-10-22T03:43:38Z
+
+> @workspace/trip-log@0.0.0 build /home/runner/workspace/artifacts/trip-log
+> vite build --config vite.config.ts
+
+vite v7.3.7 building client environment for production...
+transforming...
+src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+✓ 1961 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/public/index.html                      1.39 kB │ gzip:   0.58 kB
+dist/public/assets/trip-map-CIGW-MKW.css   15.61 kB │ gzip:   6.46 kB
+dist/public/assets/index-z420xriP.css     116.26 kB │ gzip:  19.23 kB
+dist/public/assets/trip-map-Bmb4QaGe.js   186.52 kB │ gzip:  55.64 kB
+dist/public/assets/index-YEkCYP30.js      571.05 kB │ gzip: 171.05 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 4.33s
+
+> @workspace/api-server@0.0.0 build /home/runner/workspace/artifacts/api-server
+> node ./build.mjs
+
+
+  dist/index.mjs                       2.7mb ⚠️
+  dist/pino-worker.mjs               153.5kb
+  dist/pino-file.mjs                 142.1kb
+  dist/pino-pretty.mjs               124.7kb
+  dist/thread-stream-worker.mjs        7.4kb
+  dist/index.mjs.map                   5.0mb
+  dist/pino-worker.mjs.map           256.9kb
+  dist/pino-file.mjs.map             229.0kb
+  dist/pino-pretty.mjs.map           227.8kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 312ms
+
+UTC after popup-selection correction: 2026-10-22T03:52:42Z
+
+> @workspace/trip-log@0.0.0 build /home/runner/workspace/artifacts/trip-log
+> vite build --config vite.config.ts
+
+vite v7.3.7 building client environment for production...
+transforming...
+src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+✓ 1961 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/public/index.html                      1.39 kB │ gzip:   0.58 kB
+dist/public/assets/trip-map-CIGW-MKW.css   15.61 kB │ gzip:   6.46 kB
+dist/public/assets/index-z420xriP.css     116.26 kB │ gzip:  19.23 kB
+dist/public/assets/trip-map-B6H-wS-x.js   186.72 kB │ gzip:  55.71 kB
+dist/public/assets/index-BWTxULz4.js      571.05 kB │ gzip: 171.05 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 4.38s

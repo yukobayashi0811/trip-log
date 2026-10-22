@@ -5,6 +5,90 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface StopOrderInput {
+  stopIds: string[];
+}
+
+/**
+ * @nullable
+ */
+export type StopInputTransportFromPrevious = typeof StopInputTransportFromPrevious[keyof typeof StopInputTransportFromPrevious] | null;
+
+
+export const StopInputTransportFromPrevious = {
+  Driving: 'Driving',
+  Flying: 'Flying',
+  Other: 'Other',
+} as const;
+
+export interface StopInput {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  /**
+     * Rounded to six decimal places on save
+     * @minimum -90
+     * @maximum 90
+     */
+  latitude: number;
+  /**
+     * Rounded to six decimal places on save
+     * @minimum -180
+     * @maximum 180
+     */
+  longitude: number;
+  /**
+     * @minimum 0
+     * @maximum 2147483647
+     */
+  sortOrder?: number;
+  /** @nullable */
+  visitDate?: string | null;
+  /**
+     * @maxLength 100
+     * @nullable
+     */
+  stopType?: string | null;
+  /** @nullable */
+  transportFromPrevious?: StopInputTransportFromPrevious;
+  /**
+     * @maxLength 20000
+     * @nullable
+     */
+  notes?: string | null;
+}
+
+/**
+ * @nullable
+ */
+export type StopTransportFromPrevious = typeof StopTransportFromPrevious[keyof typeof StopTransportFromPrevious] | null;
+
+
+export const StopTransportFromPrevious = {
+  Driving: 'Driving',
+  Flying: 'Flying',
+  Other: 'Other',
+} as const;
+
+export interface Stop {
+  id: string;
+  tripId: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  sortOrder: number;
+  /** @nullable */
+  visitDate: string | null;
+  /** @nullable */
+  stopType: string | null;
+  /** @nullable */
+  transportFromPrevious: StopTransportFromPrevious;
+  /** @nullable */
+  notes: string | null;
+}
+
 export type TripRequestErrorFields = {[key: string]: string[]};
 
 export interface TripRequestError {
@@ -61,6 +145,16 @@ export interface CurrentUser {
 export interface HealthStatus {
   status: string;
 }
+
+/**
+ * Stops ordered by sortOrder then UUID
+ */
+export type StopListResponse = Stop[];
+
+/**
+ * Owned stop
+ */
+export type OneStopResponse = Stop;
 
 /**
  * Invalid input; known fields have actionable messages; root errors use formErrors

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { ClerkProvider, SignIn, SignUp, Show, useClerk, useUser } from '@clerk/react';
 import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
@@ -16,6 +16,9 @@ import TripsListPage from '@/pages/trips-list';
 import TripNewPage from '@/pages/trip-new';
 import TripDetailPage from '@/pages/trip-detail';
 import TripEditPage from '@/pages/trip-edit';
+import { AuthLoading } from '@/components/require-auth';
+
+const TripMapPage = lazy(() => import('@/pages/trip-map'));
 
 const queryClient = new QueryClient();
 
@@ -302,6 +305,7 @@ function AccountRoute() {
 const TripsRoute = () => <RequireAuth>{(uid) => <TripsListPage userId={uid} />}</RequireAuth>;
 const TripNewRoute = () => <RequireAuth>{(uid) => <TripNewPage userId={uid} />}</RequireAuth>;
 const TripDetailRoute = () => <RequireAuth>{(uid) => <TripDetailPage userId={uid} />}</RequireAuth>;
+const TripMapRoute = () => <RequireAuth>{(uid) => <Suspense fallback={<AuthLoading />}><TripMapPage userId={uid} /></Suspense>}</RequireAuth>;
 const TripEditRoute = () => <RequireAuth>{(uid) => <TripEditPage userId={uid} />}</RequireAuth>;
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
@@ -337,6 +341,8 @@ function ClerkProviderWithRoutes() {
               <Route path="/account" component={AccountRoute} />
               <Route path="/trips" component={TripsRoute} />
               <Route path="/trips/new" component={TripNewRoute} />
+              <Route path="/map" component={TripMapRoute} />
+              <Route path="/trips/:id/map" component={TripMapRoute} />
               <Route path="/trips/:id/edit" component={TripEditRoute} />
               <Route path="/trips/:id" component={TripDetailRoute} />
               <Route component={NotFound} />

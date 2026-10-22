@@ -1,0 +1,12 @@
+UTC: 2026-10-22T03:39:10Z
+Restored original owner predicate; source hash matches full-suite green source.
+Command: LOG_LEVEL=error pnpm --filter @workspace/api-server exec vitest run src/tests/stops.test.ts -t 'User B cannot'
+
+ RUN  v5.0.5 /home/runner/workspace/artifacts/api-server
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 32 skipped (33)
+   Start at  03:39:11
+   Duration  1.50s (import 76%, tests 18%, transform 6%)
+
