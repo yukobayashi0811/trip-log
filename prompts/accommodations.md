@@ -177,4 +177,4 @@ Do not enable paid services, change the hosting allocation, or incur additional 
 - A controlled removal of the stay parent-trip owner predicate produced a real red isolation test (`expected 200 to be 404`); restoring the predicate produced a green focused test. Raw output, UTC times, source hashes and screenshots are in `evidence/tests/`.
 - The authenticated desktop/mobile UI workflow has not been manually exercised in this session because the available browser has no signed-in Clerk session. This limitation is documented; no unmerged code was deployed.
 - No schema migration, `PLAN.md` edit, paid service, production write or Autoscale change was made.
-- The feature branch is ready for review; the PR URL will be added here after creation.
+- Pull Request #16 is open for review: https://github.com/yukobayashi0811/trip-log/pull/16
