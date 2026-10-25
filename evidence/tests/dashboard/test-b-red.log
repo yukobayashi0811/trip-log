@@ -1,0 +1,44 @@
+
+ RUN  v5.0.5 /home/runner/workspace/generated-artifacts/feature10-worktree/artifacts/api-server
+
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > requires authentication
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > returns honest zeros and no months for an empty journal
+ × src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > Test B: two stays equal exactly three nights despite other users, extra stops and stars 213ms
+   → expected 4 to be 3 // Object.is equality
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > groups trip START dates chronologically by month AND year, not trip end dates
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > counts leap-day and year-boundary stays using date subtraction
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > refreshes after stay edits/deletion and cascading trip deletion
+ ↓ src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > returns a safe error instead of partial/zero totals on database failure
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tests/dashboard.test.ts > Dashboard aggregates against PostgreSQL > Test B: two stays equal exactly three nights despite other users, extra stops and stars
+AssertionError: expected 4 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ src/tests/dashboard.test.ts:89:52
+     87|     const response = await request(app).get(`/api/dashboard?userId=${b…
+     88|     expect(response.status).toBe(200);
+     89|     expect(response.body.totalAccommodationNights).toBe(3);
+       |                                                    ^
+     90|     expect(response.body).toEqual({
+     91|       totalTrips: 2, totalStops: 4, totalAccommodationNights: 3,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  14:59:38
+   Duration  1.76s (import 77%, tests 14%, transform 9%)
+
+undefined
+/home/runner/workspace/generated-artifacts/feature10-worktree/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: vitest run src/tests/dashboard.test.ts -t Test B --reporter=verbose
+
+Controlled mutation test exit code: 1 (expected nonzero)

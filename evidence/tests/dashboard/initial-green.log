@@ -1,0 +1,9 @@
+
+ RUN  v5.0.5 /home/runner/workspace/generated-artifacts/feature10-worktree/artifacts/api-server
+
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  14:59:26
+   Duration  1.56s (import 63%, tests 23%, transform 13%)
+

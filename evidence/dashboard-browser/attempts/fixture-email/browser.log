@@ -1,0 +1,6 @@
+PASS Unauthenticated dashboard is denied
+Attention: Clerk collects telemetry data from its SDKs when connected to development instances.
+The data collected is used to inform Clerk's product roadmap.
+To learn more, including how to opt-out from the telemetry program, visit: https://clerk.com/docs/telemetry.
+
+FAIL Unprocessable Entity

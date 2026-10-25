@@ -1,0 +1,19 @@
+{
+  "testedApplicationCommit": "43f1417fbebe4cea177cbe6a5e0d5ab3c973a56b",
+  "githubBaseCommit": "e445ccc870a3522ff32beb10e4e4b427fae759f1",
+  "applicationWorkingTreeDiff": "",
+  "applicationTrees": {
+    "artifacts": "6fbd6dc515a084e57d4ae6c3b2521d1fab2f6fa5",
+    "lib": "ca5aaeb35d16cf98f820bad687ef16802317a0f0"
+  },
+  "sourceSha256": {
+    "artifacts/api-server/src/routes/dashboard.ts": "70b6df3b6169a200327df5b3be2ecc01d680cdbd70071ec16ab7b77ff13fc8e4",
+    "artifacts/api-server/src/tests/dashboard.test.ts": "f295f99910032aa51eba42c02d6b1d881f705fcc2eb4432d17c73fc2da0b5556",
+    "artifacts/trip-log/src/pages/dashboard.tsx": "f57718511dd40b38ae598c9d08d5adc6c6390713dcf69c48bc60e9843fdf2acb",
+    "artifacts/trip-log/src/App.tsx": "691a57a6c20e7ef42278a4c677d1c62f2b706afbcad23d0a97f82d2bf5f0d3f9",
+    "artifacts/trip-log/src/components/app-shell.tsx": "a6d2d86b3e1d4a75d2c732d27df6eaea3f319a19342a4f5e931e36d235819443",
+    "lib/api-spec/openapi.yaml": "f6ba7432415c0a6868d10b80dacfc26bbde6f4194895f3432802fc2f3c4cfac2"
+  },
+  "earlyTestBProvenance": "Initial green / controlled red / restored green were run with uncommitted new Dashboard route and tests on base e445ccc. The restored backend route and tests match the committed tested application source listed here. Only the documented +1 mutation was present during red.",
+  "fullChecksAndBrowser": "Run after committing the application at testedApplicationCommit; subsequent commits must contain documentation/evidence only."
+}

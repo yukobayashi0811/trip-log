@@ -1,0 +1,135 @@
+{
+  "testedCommit": "43f1417fbebe4cea177cbe6a5e0d5ab3c973a56b",
+  "uncommittedApplicationFiles": [],
+  "testedAt": "2026-10-22T22:07:33.831Z",
+  "origin": "http://127.0.0.1:23451",
+  "database": "isolated local feature10_browser",
+  "authentication": "real temporary Clerk Development accounts and short-lived tickets; no auth bypass",
+  "builtInTester": "unavailable: Unknown config kind: testing",
+  "interception": "Only delay/500 for loading/error/retry; success metrics use actual API/database",
+  "results": [
+    {
+      "name": "Unauthenticated dashboard is denied",
+      "passed": true
+    },
+    {
+      "name": "User A: real Clerk Development session authenticated",
+      "passed": true
+    },
+    {
+      "name": "Empty authenticated dashboard has honest zeros and empty state",
+      "passed": true
+    },
+    {
+      "name": "Two stays total exactly three nights; extra stops and stars do not multiply metrics",
+      "passed": true
+    },
+    {
+      "name": "Monthly table uses trip start month and retains year",
+      "passed": true
+    },
+    {
+      "name": "Reload preserves the saved dashboard metrics",
+      "passed": true
+    },
+    {
+      "name": "390px mobile has no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile dashboard nav is labelled, reachable and touch-sized",
+      "passed": true
+    },
+    {
+      "name": "Mobile monthly table and nights are readable",
+      "passed": true
+    },
+    {
+      "name": "Delayed dashboard response shows loading, not invented zeros",
+      "passed": true
+    },
+    {
+      "name": "Failed refresh hides stale metrics and exposes Retry",
+      "passed": true
+    },
+    {
+      "name": "Retry recovers genuine saved totals",
+      "passed": true
+    },
+    {
+      "name": "User B: real Clerk Development session authenticated",
+      "passed": true
+    },
+    {
+      "name": "Independent User B sees none of User A's data",
+      "passed": true
+    },
+    {
+      "name": "User B gets only their own one trip, one stop and ten nights",
+      "passed": true
+    },
+    {
+      "name": "User A remains isolated after User B records ten nights",
+      "passed": true
+    },
+    {
+      "name": "No unhandled browser exceptions",
+      "passed": true
+    },
+    {
+      "name": "Synthetic owner trip cleanup returns 204",
+      "passed": true
+    },
+    {
+      "name": "Synthetic owner trip cleanup returns 204",
+      "passed": true
+    },
+    {
+      "name": "Synthetic owner trip cleanup returns 204",
+      "passed": true
+    }
+  ],
+  "requests": [
+    {
+      "endpoint": "/api/dashboard",
+      "status": 401
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 500
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "status": 200
+    }
+  ],
+  "browserErrors": []
+}

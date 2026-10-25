@@ -5,6 +5,23 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type DashboardTripsByMonthItem = {
+  /** @pattern ^[0-9]{4}-[0-9]{2}$ */
+  month: string;
+  /** @minimum 1 */
+  tripCount: number;
+};
+
+export interface Dashboard {
+  /** @minimum 0 */
+  totalTrips: number;
+  /** @minimum 0 */
+  totalStops: number;
+  /** @minimum 0 */
+  totalAccommodationNights: number;
+  tripsByMonth: DashboardTripsByMonthItem[];
+}
+
 export type DrivingRouteStatus = typeof DrivingRouteStatus[keyof typeof DrivingRouteStatus];
 
 

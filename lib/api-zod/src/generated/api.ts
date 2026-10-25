@@ -9,6 +9,30 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Current owner's totals and trip start months (date-only)
+ */
+export const getDashboardResponseTotalTripsMin = 0;
+
+export const getDashboardResponseTotalStopsMin = 0;
+
+export const getDashboardResponseTotalAccommodationNightsMin = 0;
+
+export const getDashboardResponseTripsByMonthItemMonthRegExp = new RegExp('^[0-9]{4}-[0-9]{2}$');
+
+
+
+export const GetDashboardResponse = zod.object({
+  "totalTrips": zod.number().int().min(getDashboardResponseTotalTripsMin),
+  "totalStops": zod.number().int().min(getDashboardResponseTotalStopsMin),
+  "totalAccommodationNights": zod.number().int().min(getDashboardResponseTotalAccommodationNightsMin),
+  "tripsByMonth": zod.array(zod.object({
+  "month": zod.string().regex(getDashboardResponseTripsByMonthItemMonthRegExp),
+  "tripCount": zod.number().int().min(1)
+}))
+})
+
+
+/**
  * @summary List only the current user's starred trips
  */
 export const GetStarredTripsResponseItem = zod.object({

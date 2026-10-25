@@ -82,3 +82,12 @@ Managed production schema changes happen through the owner's Publish flow after
 review/merge. No production DDL, startup migrations, or deploy-build migration
 script is included. The existing stay table and constraints are reused as-is;
 Feature 7 adds no schema change or production migration.
+
+## Dashboard read model (Feature 10)
+
+No new tables, columns, constraints or migrations. `GET /api/dashboard` selects
+owned trips by the authenticated internal user ID, counts trips and related
+stops independently, sums PostgreSQL `stays.check_out - stays.check_in` through
+owned stops/trips, and groups trip starts by year-month. Stars are not joined.
+One statement provides a consistent snapshot without multiplying rows.
+See [Test B and Dashboard verification](docs/dashboard-verification.md).
