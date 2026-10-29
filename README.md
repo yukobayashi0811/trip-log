@@ -167,13 +167,10 @@ requests over 100 KiB return 413, and unsupported media/encoding returns 415.
 ## Review and publishing
 
 All changes use Issues, feature branches, prompt logs, tests, and reviewed PRs.
-Only the owner merges. After each merged feature, once deployable, review costs,
-publish through the owner-controlled Replit Publish flow, and verify the live
-feature before starting the next one. Development and production Clerk users
-and databases are separate. Authentication, the five-table schema, Trip CRUD,
-validation and Feature 5 map/stops are published at https://trip-log.replit.app;
-the owner confirmed the production map/stop interactions after republishing.
-Feature 6 is development-only until personally merged and owner-republished;
-real ORS access additionally needs its server-only secret.
+Only the owner merges and publishes. The published application includes the
+completed Features 1–10. The owner also confirmed that PR #28's first-stop
+improvement was published and verified in production. See each feature's
+verification document for its recorded test scope and limitations. Development
+and production Clerk users and databases are separate.
 Replit applies managed production schema changes through Publish; no application
 startup DDL or production migration script is used.
