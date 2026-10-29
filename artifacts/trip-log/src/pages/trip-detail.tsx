@@ -74,7 +74,7 @@ export default function TripDetailPage({ userId }: { userId: string }) {
             <p className="mt-4 text-sm text-muted-foreground" role="status" data-testid="status-loading-itinerary">Loading itinerary…</p>
           ) : stopsQ.isError ? (
             <p className="mt-4 rounded-xl bg-destructive/5 p-3 text-sm text-destructive" role="status" data-testid="error-loading-itinerary">The itinerary could not be loaded. <Link href={`/trips/${trip.id}/map`} className="font-medium underline">Try it on the map</Link>.</p>
-          ) : stopsQ.data?.length ? (
+          ) : stopsQ.isSuccess && stopsQ.data.length > 0 ? (
             <ol className="mt-4 space-y-3" data-testid="list-trip-itinerary">
               {stopsQ.data.map((stop, index) => (
                 <li key={stop.id} className="rounded-2xl border border-card-border bg-card p-4" data-testid={`row-trip-stop-${stop.id}`}>
@@ -93,9 +93,19 @@ export default function TripDetailPage({ userId }: { userId: string }) {
                 </li>
               ))}
             </ol>
-          ) : (
-            <p className="mt-4 italic text-muted-foreground" data-testid="text-empty-itinerary">No stops have been added yet.</p>
-          )}
+          ) : stopsQ.isSuccess ? (
+            <div className="mt-4 flex flex-col items-start gap-3 rounded-2xl border border-dashed border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="italic text-muted-foreground" data-testid="text-empty-itinerary">No stops have been added yet.</p>
+              <Link
+                href={`/trips/${trip.id}/map`}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                data-testid="link-add-first-stop"
+              >
+                <MapPin className="h-4 w-4" aria-hidden="true" />
+                Add first stop
+              </Link>
+            </div>
+          ) : null}
         </section>
         <section className="mt-10">
           <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Notes</h2>
