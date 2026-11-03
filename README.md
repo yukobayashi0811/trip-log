@@ -3,6 +3,9 @@
 **Your journeys, mapped.** A private travel journal built feature-by-feature
 according to the approved [PLAN.md](PLAN.md).
 
+**Live app:** https://trip-log.replit.app (create an account or sign in to open
+your own private journal).
+
 ## Implemented foundation
 
 Public landing page, embedded Clerk sign-up/sign-in, logout, and a protected
@@ -58,6 +61,7 @@ endpoint, schema change, or dependency. See
 [search, filter, and sort verification](docs/search-verification.md).
 Feature 10 adds a private, responsive `/dashboard` with trip and stop counts,
 calendar-date accommodation nights, and chronological trip-start month totals.
+PR #30 adds a responsive bar chart alongside the exact monthly counts table.
 One authenticated snapshot query aggregates each metric separately, avoiding
 join multiplication and excluding other owners. No schema or infrastructure
 change is needed. See [Dashboard verification and Test B](docs/dashboard-verification.md)
@@ -100,8 +104,11 @@ See [authentication verification](docs/auth-verification.md) for actual results
 and [database verification](docs/database-verification.md) for the database tests
 and the historical database checkpoint. See [Trip CRUD verification](docs/trip-crud-verification.md)
 and [actual ownership regression evidence](evidence/tests/README.md) for Feature 3.
-The full backend suite passes **248 tests** across authentication, schema,
-trip/stop/stay/star/routing API integration, provider safety and shared/HTTP validation. The Feature 3 CRUD browser
+The recorded Feature 10 backend regression run passed **255 tests in 13 files**,
+including Dashboard tests, authentication, schema, trip/stop/stay/star/routing
+API integration, provider safety and shared/HTTP validation. See the
+[saved regression output](evidence/tests/dashboard/api-regression.log); this is a
+historical verification result, not a new test run. The Feature 3 CRUD browser
 journey passed on desktop/mobile; the focused Feature 4 validation browser
 journey passed on desktop.
 Feature 5's actual desktop/mobile map-click CRUD/reorder/collapse browser
