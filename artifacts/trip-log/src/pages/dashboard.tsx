@@ -43,6 +43,7 @@ export default function DashboardPage({ userId }: { userId: string }) {
     () => (d?.tripsByMonth ?? []).filter((r) => r.tripCount > 0).slice().sort((a, b) => a.month.localeCompare(b.month)),
     [d],
   );
+  const maxMonthlyTrips = months.reduce((max, row) => Math.max(max, row.tripCount), 1);
 
   return (
     <AppShell>
@@ -80,29 +81,45 @@ export default function DashboardPage({ userId }: { userId: string }) {
                   </Link>
                 </div>
               ) : (
-                <div className="mt-5 overflow-x-auto">
-                  <table className="w-full border-collapse text-sm" data-testid="table-trips-by-month">
-                    <caption className="sr-only">Number of trips by start month, oldest first</caption>
-                    <thead>
-                      <tr className="border-b border-border text-left text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                        <th scope="col" className="py-2 pr-4 font-semibold">Start month</th>
-                        <th scope="col" className="py-2 text-right font-semibold">Trips</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                <>
+                  <figure className="mt-5" data-testid="chart-trips-by-month">
+                    <figcaption className="sr-only">Horizontal bars compare trips by start month. Exact totals are shown beside each month.</figcaption>
+                    <ol className="space-y-3" aria-label="Trips by start month">
                       {months.map((r) => (
-                        <tr key={r.month} className="group border-b border-border/60 transition-colors last:border-0 hover:bg-accent/40" data-testid={`row-month-${r.month}`}>
-                          <th scope="row" className="py-3 pr-4 text-left font-medium">{monthLabel(r.month)}</th>
-                          <td className="py-3 text-right">
-                            <span className="inline-flex items-center justify-end gap-3">
-                              <span className="tabular-nums">{plural(r.tripCount, 'trip', 'trips')}</span>
-                            </span>
-                          </td>
-                        </tr>
+                        <li key={r.month} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 sm:grid-cols-[10rem_minmax(0,1fr)_5rem]" data-testid={`bar-month-${r.month}`}>
+                          <span className="min-w-0 text-sm font-medium leading-tight">{monthLabel(r.month)}</span>
+                          <span className="text-right text-sm tabular-nums sm:col-start-3 sm:row-start-1">{plural(r.tripCount, 'trip', 'trips')}</span>
+                          <div className="col-span-2 h-3 overflow-hidden rounded-full bg-muted sm:col-start-2 sm:col-span-1 sm:row-start-1" aria-hidden="true">
+                            <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${(r.tripCount / maxMonthlyTrips) * 100}%` }} />
+                          </div>
+                        </li>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
+                    </ol>
+                  </figure>
+                  <div className="mt-8 overflow-x-auto">
+                    <table className="w-full border-collapse text-sm" data-testid="table-trips-by-month">
+                      <caption className="sr-only">Number of trips by start month, oldest first</caption>
+                      <thead>
+                        <tr className="border-b border-border text-left text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                          <th scope="col" className="py-2 pr-4 font-semibold">Start month</th>
+                          <th scope="col" className="py-2 text-right font-semibold">Trips</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {months.map((r) => (
+                          <tr key={r.month} className="group border-b border-border/60 transition-colors last:border-0 hover:bg-accent/40" data-testid={`row-month-${r.month}`}>
+                            <th scope="row" className="py-3 pr-4 text-left font-medium">{monthLabel(r.month)}</th>
+                            <td className="py-3 text-right">
+                              <span className="inline-flex items-center justify-end gap-3">
+                                <span className="tabular-nums">{plural(r.tripCount, 'trip', 'trips')}</span>
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               )}
             </div>
           </>
